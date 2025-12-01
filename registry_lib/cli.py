@@ -149,7 +149,19 @@ def cmd_plugin_remove(args):
 def cmd_plugin_list(args):
     """List plugins in registry."""
     registry = Registry(args.registry)
-    plugins = sorted(registry.data["plugins"], key=lambda p: p["id"])
+    plugins = registry.data["plugins"]
+
+    # Filter by trust level
+    if args.trust:
+        plugins = [p for p in plugins if p.get("trust_level") == args.trust]
+
+    # Filter by category
+    if args.category:
+        plugins = [p for p in plugins if args.category in p.get("categories", [])]
+
+    # Sort by ID
+    plugins = sorted(plugins, key=lambda p: p["id"])
+
     for i, plugin in enumerate(plugins):
         if args.verbose:
             if i > 0:
@@ -275,6 +287,8 @@ def main():
     # plugin list
     list_parser = plugin_subparsers.add_parser("list", help="List plugins")
     list_parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed information")
+    list_parser.add_argument("--trust", choices=["official", "trusted", "community"], help="Filter by trust level")
+    list_parser.add_argument("--category", help="Filter by category")
     list_parser.set_defaults(func=cmd_plugin_list)
 
     # plugin show
