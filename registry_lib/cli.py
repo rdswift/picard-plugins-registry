@@ -32,26 +32,36 @@ def cmd_plugin_list(args):
 
 
 def cmd_blacklist_add(args):
-    """Add URL to blacklist."""
+    """Add entry to blacklist."""
     registry = Registry(args.registry)
-    add_blacklist(registry, args.url, args.reason)
+    add_blacklist(registry, url=args.url, uuid=args.uuid, url_regex=args.url_regex, reason=args.reason)
     registry.save()
-    print(f"Blacklisted: {args.url}")
+    identifier = args.uuid or args.url or args.url_regex
+    print(f"Blacklisted: {identifier}")
 
 
 def cmd_blacklist_remove(args):
-    """Remove URL from blacklist."""
+    """Remove entry from blacklist."""
     registry = Registry(args.registry)
-    registry.remove_blacklist(args.url)
+    registry.remove_blacklist(url=args.url, uuid=args.uuid)
     registry.save()
-    print(f"Removed from blacklist: {args.url}")
+    identifier = args.uuid or args.url
+    print(f"Removed from blacklist: {identifier}")
 
 
 def cmd_blacklist_list(args):
-    """List blacklisted URLs."""
+    """List blacklisted entries."""
     registry = Registry(args.registry)
     for entry in registry.data["blacklist"]:
-        print(f"{entry['url']}: {entry['reason']}")
+        identifiers = []
+        if "uuid" in entry:
+            identifiers.append(f"UUID:{entry['uuid']}")
+        if "url" in entry:
+            identifiers.append(f"URL:{entry['url']}")
+        if "url_regex" in entry:
+            identifiers.append(f"REGEX:{entry['url_regex']}")
+        identifier_str = ", ".join(identifiers)
+        print(f"{identifier_str}: {entry['reason']}")
 
 
 def main():
@@ -88,13 +98,16 @@ def main():
 
     # blacklist add
     bl_add_parser = blacklist_subparsers.add_parser("add", help="Add to blacklist")
-    bl_add_parser.add_argument("url", help="Git URL or pattern")
+    bl_add_parser.add_argument("--url", help="Git URL to blacklist")
+    bl_add_parser.add_argument("--uuid", help="Plugin UUID to blacklist")
+    bl_add_parser.add_argument("--url-regex", dest="url_regex", help="URL regex pattern to blacklist")
     bl_add_parser.add_argument("--reason", required=True, help="Reason for blacklisting")
     bl_add_parser.set_defaults(func=cmd_blacklist_add)
 
     # blacklist remove
     bl_remove_parser = blacklist_subparsers.add_parser("remove", help="Remove from blacklist")
-    bl_remove_parser.add_argument("url", help="Git URL")
+    bl_remove_parser.add_argument("--url", help="Git URL to remove")
+    bl_remove_parser.add_argument("--uuid", help="Plugin UUID to remove")
     bl_remove_parser.set_defaults(func=cmd_blacklist_remove)
 
     # blacklist list

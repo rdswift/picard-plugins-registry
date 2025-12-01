@@ -79,10 +79,13 @@ class Registry:
         """
         self.data["blacklist"].append(entry)
 
-    def remove_blacklist(self, url):
+    def remove_blacklist(self, url=None, uuid=None):
         """Remove blacklist entry.
 
         Args:
-            url: Git URL to remove
+            url: Git URL to remove (optional)
+            uuid: Plugin UUID to remove (optional)
         """
-        self.data["blacklist"] = [e for e in self.data["blacklist"] if e["url"] != url]
+        self.data["blacklist"] = [
+            e for e in self.data["blacklist"] if not ((url and e.get("url") == url) or (uuid and e.get("uuid") == uuid))
+        ]

@@ -59,12 +59,23 @@ uv run registry plugin remove plugin-id
 ### Blacklist a Plugin
 
 ```bash
-uv run registry blacklist add https://github.com/bad/plugin \
+# Blacklist by URL
+uv run registry blacklist add --url https://github.com/bad/plugin \
     --reason "Contains malicious code"
 
-# Blacklist entire organization
-uv run registry blacklist add "https://github.com/badorg/*" \
+# Blacklist by UUID (recommended - blocks plugin at all URLs)
+uv run registry blacklist add --uuid 12345678-1234-4234-8234-123456789abc \
+    --reason "Malicious plugin"
+
+# Blacklist by URL regex (entire organization)
+uv run registry blacklist add --url-regex "^https://github\\.com/badorg/.*" \
     --reason "Compromised account"
+
+# Blacklist specific fork (UUID + URL combination)
+uv run registry blacklist add \
+    --uuid 12345678-1234-4234-8234-123456789abc \
+    --url https://github.com/badactor/fork \
+    --reason "Malicious fork of legitimate plugin"
 ```
 
 ### List Blacklist
