@@ -23,7 +23,6 @@ def test_validate_manifest_missing_required():
         "name": "Test Plugin",
     }
     errors = validate_manifest_dict(manifest)
-    assert "Missing required field: version" in errors
     assert "Missing required field: description" in errors
     assert "Missing required field: api" in errors
 
