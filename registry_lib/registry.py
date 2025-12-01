@@ -3,8 +3,6 @@
 import json
 from pathlib import Path
 
-from registry_lib.utils import now_iso8601
-
 
 class Registry:
     """Manages the plugins.json registry file."""
@@ -23,7 +21,6 @@ class Registry:
         if not self.path.exists():
             return {
                 "api_version": "3.0",
-                "last_updated": now_iso8601(),
                 "plugins": [],
                 "blacklist": [],
             }
@@ -50,7 +47,6 @@ class Registry:
 
     def save(self):
         """Save registry to file."""
-        self.data["last_updated"] = now_iso8601()
         # Sort plugins by ID for consistent ordering
         self.data["plugins"] = sorted(self.data["plugins"], key=lambda p: p["id"])
         with open(self.path, "w") as f:

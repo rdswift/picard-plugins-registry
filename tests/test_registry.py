@@ -17,7 +17,6 @@ def test_registry_init_new(temp_registry):
     assert temp_registry.data["api_version"] == "3.0"
     assert temp_registry.data["plugins"] == []
     assert temp_registry.data["blacklist"] == []
-    assert "last_updated" in temp_registry.data
 
 
 def test_registry_save_and_load(tmp_path):

@@ -14,7 +14,6 @@ def test_cli_ref_add(capsys):
         registry_file = Path(tmpdir) / "plugins.json"
         registry_data = {
             "api_version": "3.0",
-            "last_updated": "2025-01-01T00:00:00Z",
             "plugins": [
                 {
                     "id": "test-plugin",
@@ -70,7 +69,6 @@ def test_cli_ref_edit(capsys):
         registry_file = Path(tmpdir) / "plugins.json"
         registry_data = {
             "api_version": "3.0",
-            "last_updated": "2025-01-01T00:00:00Z",
             "plugins": [
                 {
                     "id": "test-plugin",
@@ -121,7 +119,6 @@ def test_cli_ref_rename(capsys):
         registry_file = Path(tmpdir) / "plugins.json"
         registry_data = {
             "api_version": "3.0",
-            "last_updated": "2025-01-01T00:00:00Z",
             "plugins": [
                 {
                     "id": "test-plugin",
@@ -162,7 +159,6 @@ def test_cli_ref_list(capsys):
         registry_file = Path(tmpdir) / "plugins.json"
         registry_data = {
             "api_version": "3.0",
-            "last_updated": "2025-01-01T00:00:00Z",
             "plugins": [
                 {
                     "id": "test-plugin",
@@ -204,7 +200,6 @@ def test_cli_ref_list_no_refs(capsys):
         registry_file = Path(tmpdir) / "plugins.json"
         registry_data = {
             "api_version": "3.0",
-            "last_updated": "2025-01-01T00:00:00Z",
             "plugins": [
                 {
                     "id": "test-plugin",
@@ -236,7 +231,6 @@ def test_cli_ref_remove(capsys):
         registry_file = Path(tmpdir) / "plugins.json"
         registry_data = {
             "api_version": "3.0",
-            "last_updated": "2025-01-01T00:00:00Z",
             "plugins": [
                 {
                     "id": "test-plugin",
