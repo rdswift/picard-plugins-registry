@@ -22,7 +22,12 @@ uv sync
 
 # Install pre-commit hooks
 uv run pre-commit install
+
+# Activate virtual environment (optional - allows running `registry` directly)
+source .venv/bin/activate
 ```
+
+**Note:** After activating the virtual environment, you can run `registry` directly instead of `uv run registry`.
 
 ## Usage
 
