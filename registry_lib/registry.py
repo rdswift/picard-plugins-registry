@@ -1,0 +1,88 @@
+"""Registry management."""
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+class Registry:
+    """Manages the plugins.json registry file."""
+
+    def __init__(self, path="plugins.json"):
+        """Initialize registry.
+
+        Args:
+            path: Path to plugins.json file
+        """
+        self.path = Path(path)
+        self.data = self._load()
+
+    def _load(self):
+        """Load registry from file or create new."""
+        if not self.path.exists():
+            return {
+                "api_version": "3.0",
+                "last_updated": datetime.now(timezone.utc).isoformat(),
+                "plugins": [],
+                "blacklist": [],
+            }
+        with open(self.path) as f:
+            return json.load(f)
+
+    def save(self):
+        """Save registry to file."""
+        self.data["last_updated"] = datetime.now(timezone.utc).isoformat()
+        with open(self.path, "w") as f:
+            json.dump(self.data, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+
+    def find_plugin(self, plugin_id):
+        """Find plugin by ID.
+
+        Args:
+            plugin_id: Plugin ID
+
+        Returns:
+            dict or None: Plugin entry if found
+        """
+        for plugin in self.data["plugins"]:
+            if plugin["id"] == plugin_id:
+                return plugin
+        return None
+
+    def add_plugin(self, plugin):
+        """Add plugin to registry.
+
+        Args:
+            plugin: Plugin dict with all required fields
+
+        Raises:
+            ValueError: If plugin already exists
+        """
+        if self.find_plugin(plugin["id"]):
+            raise ValueError(f"Plugin {plugin['id']} already exists")
+        self.data["plugins"].append(plugin)
+
+    def remove_plugin(self, plugin_id):
+        """Remove plugin from registry.
+
+        Args:
+            plugin_id: Plugin ID
+        """
+        self.data["plugins"] = [p for p in self.data["plugins"] if p["id"] != plugin_id]
+
+    def add_blacklist(self, entry):
+        """Add blacklist entry.
+
+        Args:
+            entry: Blacklist dict with url and reason
+        """
+        self.data["blacklist"].append(entry)
+
+    def remove_blacklist(self, url):
+        """Remove blacklist entry.
+
+        Args:
+            url: Git URL to remove
+        """
+        self.data["blacklist"] = [e for e in self.data["blacklist"] if e["url"] != url]
