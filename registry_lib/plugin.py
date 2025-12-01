@@ -5,6 +5,9 @@ from registry_lib.picard.constants import REGISTRY_TRUST_LEVELS
 from registry_lib.utils import derive_plugin_id, now_iso8601
 
 
+DEFAULT_REF = "main"
+
+
 def _sync_optional_fields(plugin, manifest, fields):
     """Sync optional fields from manifest to plugin.
 
@@ -44,7 +47,7 @@ def add_plugin(registry, git_url, trust_level, categories=None, refs=None):
     if refs:
         refs_list = _parse_refs(refs)
     else:
-        refs_list = [{"name": "main"}]
+        refs_list = [{"name": DEFAULT_REF}]
 
     # Fetch and validate manifest from first ref (default ref)
     manifest = fetch_manifest(git_url, refs_list[0]["name"])
@@ -83,7 +86,7 @@ def add_plugin(registry, git_url, trust_level, categories=None, refs=None):
     _sync_optional_fields(plugin, manifest, ["maintainers", "name_i18n", "description_i18n"])
 
     # Add refs if not default single main
-    if not (len(refs_list) == 1 and refs_list[0]["name"] == "main" and "min_api_version" not in refs_list[0]):
+    if not (len(refs_list) == 1 and refs_list[0]["name"] == DEFAULT_REF and "min_api_version" not in refs_list[0]):
         plugin["refs"] = refs_list
 
     registry.add_plugin(plugin)
@@ -144,7 +147,7 @@ def update_plugin(registry, plugin_id, ref=None):
     if not plugin:
         raise ValueError(f"Plugin {plugin_id} not found")
 
-    # Get ref (use provided, or default to first ref, or main)
+        refs = plugin.get("refs", [{"name": DEFAULT_REF}])
     if ref is None:
         refs = plugin.get("refs", [{"name": "main"}])
         ref = refs[0]["name"]

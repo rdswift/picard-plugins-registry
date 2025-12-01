@@ -4,7 +4,7 @@ import argparse
 import sys
 
 from registry_lib.blacklist import add_blacklist
-from registry_lib.plugin import add_plugin, update_plugin
+from registry_lib.plugin import DEFAULT_REF, add_plugin, update_plugin
 from registry_lib.registry import Registry
 from registry_lib.utils import now_iso8601
 
@@ -227,7 +227,7 @@ def cmd_plugin_ref_list(args):
 
     refs = plugin.get('refs', [])
     if not refs:
-        print("No refs defined (using default: main)")
+        print(f"No refs defined (using default: {DEFAULT_REF})")
         return
 
     for ref in refs:
