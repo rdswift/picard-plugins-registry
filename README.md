@@ -44,6 +44,14 @@ uv run registry plugin add https://github.com/user/plugin-name \
     --ref develop
 ```
 
+### Update Plugin Metadata
+
+Refresh plugin metadata from MANIFEST.toml:
+
+```bash
+uv run registry plugin update plugin-id
+```
+
 ### Edit a Plugin
 
 ```bash
@@ -62,13 +70,27 @@ uv run registry plugin edit plugin-id --trust trusted --categories metadata
 When a plugin moves to a new repository URL, add a redirect so users with the old URL can still get updates:
 
 ```bash
+# Add redirect
 uv run registry plugin redirect plugin-id https://github.com/olduser/old-repo
+
+# Remove redirect
+uv run registry plugin redirect plugin-id https://github.com/olduser/old-repo --remove
 ```
 
 ### List Plugins
 
 ```bash
+# Compact list
 uv run registry plugin list
+
+# Detailed list (shows all plugin information)
+uv run registry plugin list --verbose
+```
+
+### Show Plugin Details
+
+```bash
+uv run registry plugin show plugin-id
 ```
 
 ### Remove a Plugin
@@ -99,10 +121,36 @@ uv run registry blacklist add \
     --reason "Malicious fork of legitimate plugin"
 ```
 
+### Remove from Blacklist
+
+```bash
+# Remove by URL
+uv run registry blacklist remove --url https://github.com/bad/plugin
+
+# Remove by UUID
+uv run registry blacklist remove --uuid 12345678-1234-4234-8234-123456789abc
+```
+
 ### List Blacklist
 
 ```bash
 uv run registry blacklist list
+```
+
+### Validate Registry
+
+Check registry integrity (duplicate IDs, UUIDs, URLs):
+
+```bash
+uv run registry validate
+```
+
+### Show Statistics
+
+Display registry statistics by trust level and category:
+
+```bash
+uv run registry stats
 ```
 
 ## Trust Levels
