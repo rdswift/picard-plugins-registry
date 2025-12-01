@@ -129,6 +129,15 @@ registry plugin list
 
 # Detailed list (shows all plugin information)
 registry plugin list --verbose
+
+# Filter by trust level
+registry plugin list --trust official
+
+# Filter by category
+registry plugin list --category metadata
+
+# Combine filters
+registry plugin list --trust community --category coverart --verbose
 ```
 
 ### Show Plugin Details
@@ -179,6 +188,16 @@ registry blacklist remove --uuid 12345678-1234-4234-8234-123456789abc
 
 ```bash
 registry blacklist list
+```
+
+### Show Blacklist Entry
+
+```bash
+# Show details by URL
+registry blacklist show --url https://github.com/bad/plugin
+
+# Show details by UUID
+registry blacklist show --uuid 12345678-1234-4234-8234-123456789abc
 ```
 
 ### Validate Registry
