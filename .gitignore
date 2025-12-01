@@ -151,6 +151,9 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
+# GitEye project settings
+/.project
+
 # mkdocs documentation
 /site
 
