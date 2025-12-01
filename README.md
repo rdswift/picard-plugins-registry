@@ -210,6 +210,66 @@ uv run pre-commit run --all-files
 
 All commits must pass pre-commit hooks (ruff format, ruff check, pytest).
 
+## Submitting Your Plugin
+
+Plugin developers can submit their plugins to the registry by creating a pull request:
+
+### Prerequisites
+
+- Your plugin must have a valid `MANIFEST.toml` file in the repository root
+- The plugin must be hosted on GitHub (other platforms may be supported in the future)
+- Your plugin should follow the [Picard plugin guidelines](https://picard-docs.musicbrainz.org/)
+
+### Submission Process
+
+1. **Fork and clone this repository:**
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/picard-plugins-registry.git
+   cd picard-plugins-registry
+   ```
+
+2. **Set up the environment:**
+   ```bash
+   uv sync
+   source .venv/bin/activate
+   ```
+
+3. **Add your plugin:**
+   ```bash
+   registry plugin add https://github.com/YOUR-USERNAME/your-plugin \
+       --trust community \
+       --categories metadata
+   ```
+
+   Available categories: `metadata`, `coverart`, `ui`, `scripting`, `formats`, `other`
+
+4. **Validate the registry:**
+   ```bash
+   registry validate
+   ```
+
+5. **Commit and push:**
+   ```bash
+   git add plugins.json
+   git commit -m "Add plugin: Your Plugin Name"
+   git push origin main
+   ```
+
+6. **Create a pull request:**
+   - Go to https://github.com/metabrainz/picard-plugins-registry
+   - Click "New Pull Request"
+   - Select your fork and branch
+   - Describe your plugin in the PR description
+
+7. **Wait for review:**
+   - The Picard team will review your submission
+   - CI will automatically validate the registry
+   - Once approved, your plugin will be available to all Picard users
+
+### Trust Levels
+
+New plugins are added with `community` trust level. After establishing a good track record, plugins may be promoted to `trusted` or `official` status by the Picard team.
+
 ## License
 
 GPL-2.0-or-later
