@@ -241,6 +241,33 @@ def cmd_blacklist_list(args):
         print(f"{identifier_str}: {entry['reason']}")
 
 
+def cmd_blacklist_show(args):
+    """Show blacklist entry details."""
+    registry = Registry(args.registry)
+
+    # Find entry by URL or UUID
+    entry = None
+    for e in registry.data["blacklist"]:
+        if (args.url and e.get("url") == args.url) or (args.uuid and e.get("uuid") == args.uuid):
+            entry = e
+            break
+
+    if not entry:
+        identifier = args.uuid or args.url
+        print(f"Error: Blacklist entry {identifier} not found", file=sys.stderr)
+        sys.exit(1)
+
+    # Display entry details
+    if "uuid" in entry:
+        print(f"UUID: {entry['uuid']}")
+    if "url" in entry:
+        print(f"URL: {entry['url']}")
+    if "url_regex" in entry:
+        print(f"URL Regex: {entry['url_regex']}")
+    print(f"Reason: {entry['reason']}")
+    print(f"Blacklisted at: {entry['blacklisted_at']}")
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(description="Picard plugins registry maintenance tool")
@@ -317,6 +344,12 @@ def main():
     # blacklist list
     bl_list_parser = blacklist_subparsers.add_parser("list", help="List blacklist")
     bl_list_parser.set_defaults(func=cmd_blacklist_list)
+
+    # blacklist show
+    bl_show_parser = blacklist_subparsers.add_parser("show", help="Show blacklist entry details")
+    bl_show_parser.add_argument("--url", help="Git URL")
+    bl_show_parser.add_argument("--uuid", help="Plugin UUID")
+    bl_show_parser.set_defaults(func=cmd_blacklist_show)
 
     # Validate command
     validate_parser = subparsers.add_parser("validate", help="Validate registry")
