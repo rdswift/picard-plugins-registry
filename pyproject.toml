@@ -35,3 +35,4 @@ ignore = ["E501"]
 
 [tool.uv]
 default-groups = ["dev"]
+package = true
