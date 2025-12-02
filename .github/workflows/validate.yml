@@ -2,12 +2,8 @@ name: Validate Registry
 
 on:
   pull_request:
-    paths:
-      - 'plugins.json'
   push:
     branches: [main]
-    paths:
-      - 'plugins.json'
   workflow_run:
     workflows: ["Test"]
     types:
@@ -19,16 +15,27 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            registry:
+              - 'plugins.json'
+
       - name: Install uv
+        if: steps.changes.outputs.registry == 'true'
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
 
       - name: Set up Python
+        if: steps.changes.outputs.registry == 'true'
         run: uv python install
 
       - name: Install dependencies
+        if: steps.changes.outputs.registry == 'true'
         run: uv sync
 
       - name: Validate registry
+        if: steps.changes.outputs.registry == 'true'
         run: uv run registry validate
