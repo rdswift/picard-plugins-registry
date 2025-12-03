@@ -50,6 +50,35 @@
         "de": "Dieses Plugin stellt spezielle Album- und Titelvariablen für die Verwendung in Benennungsskripten bereit.",
         "fr": "Ce plugin fournit des variables spécialisées pour les albums et les pistes à utiliser dans les scripts de nommage."
       }
+    },
+    {
+      "id": "view-script-variables",
+      "uuid": "62e2a3fd-f4df-4b53-abc5-b73d2a36b672",
+      "name": "View script variables",
+      "description": "Display a dialog box listing the metadata tags and variables for the track / file.",
+      "git_url": "https://github.com/rdswift/picard-plugin-view-script-variables",
+      "categories": [
+        "metadata",
+        "ui"
+      ],
+      "trust_level": "trusted",
+      "authors": [
+        "Sophist"
+      ],
+      "added_at": "2025-12-03T18:30:59Z",
+      "updated_at": "2025-12-03T18:30:59Z",
+      "maintainers": [
+        "Bob Swift"
+      ],
+      "name_i18n": {
+        "de": "Script-Variablen anzeigen",
+        "fr": "Afficher les variables du script"
+      },
+      "description_i18n": {
+        "de": "Zeigen Sie ein Dialogfeld an, in dem die Metadaten-Tags und Variablen für den Titel/die Datei aufgelistet sind.",
+        "fr": "Affichez une boîte de dialogue répertoriant les balises de métadonnées et les variables pour la piste/le fichier."
+      },
+      "versioning_scheme": "semver"
     }
   ],
   "blacklist": []
