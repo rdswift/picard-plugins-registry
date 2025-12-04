@@ -1,11 +1,17 @@
 """Tests for CLI ref commands."""
 
 from pathlib import Path
+import sys
 import tempfile
 from unittest.mock import patch
 
 import tomli_w
-import tomllib
+
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 from registry_lib.cli import main
 
