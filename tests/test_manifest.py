@@ -48,8 +48,16 @@ api = ["3.0"]
     assert "plugin/main" in call_url
 
 
+@pytest.mark.parametrize(
+    "repo_url, expected_manifest_url",
+    [
+        ("https://github.com/user/plugin", "raw.githubusercontent.com/user/plugin/main/MANIFEST.toml"),
+        ("https://gitlab.com/user/plugin", "gitlab.com/user/plugin/-/raw/main/MANIFEST.toml"),
+        ("https://git.sr.ht/~user/plugin", "git.sr.ht/~user/plugin/blob/main/MANIFEST.toml"),
+    ],
+)
 @patch("registry_lib.manifest.requests.get")
-def test_fetch_manifest_gitlab(mock_get):
+def test_fetch_manifest_supported(mock_get, repo_url, expected_manifest_url):
     """Test successful manifest fetch from GitLab."""
     mock_response = Mock()
     mock_response.text = """
@@ -61,16 +69,16 @@ api = ["3.0"]
 """
     mock_get.return_value = mock_response
 
-    manifest = fetch_manifest("https://gitlab.com/user/plugin", "main")
+    manifest = fetch_manifest(repo_url, "main")
 
     assert manifest["uuid"] == "12345678-1234-4234-8234-123456789abc"
     call_url = mock_get.call_args[0][0]
-    assert "gitlab.com/user/plugin/-/raw/main/MANIFEST.toml" in call_url
+    assert expected_manifest_url in call_url
 
 
 def test_fetch_manifest_unsupported():
     """Test fetch manifest with unsupported URL."""
-    with pytest.raises(ValueError, match="Only GitHub and GitLab URLs are supported"):
+    with pytest.raises(ValueError, match="Only GitHub, GitLab and Sourcehut URLs are supported"):
         fetch_manifest("https://bitbucket.org/user/plugin")
 
 
