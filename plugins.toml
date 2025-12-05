@@ -130,3 +130,19 @@ fr = "Afficher les variables du script"
 [plugins.description_i18n]
 de = "Zeigen Sie ein Dialogfeld an, in dem die Metadaten-Tags und Variablen für den Titel/die Datei aufgelistet sind."
 fr = "Affichez une boîte de dialogue répertoriant les balises de métadonnées et les variables pour la piste/le fichier."
+
+[[plugins]]
+id = "xqaf"
+uuid = "88a16689-663b-4d78-bc1c-2fd7698e51b0"
+name = "XQAF"
+description = "Support for the XQAF and QOA audio file formats"
+git_url = "https://git.sr.ht/~phw/picard-plugin-xqaf"
+categories = [
+  "formats",
+]
+trust_level = "trusted"
+authors = [
+  "Philipp Wolfer",
+]
+added_at = "2025-12-05T20:01:04Z"
+updated_at = "2025-12-05T20:01:04Z"
