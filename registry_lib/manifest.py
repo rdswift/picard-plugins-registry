@@ -34,8 +34,10 @@ def fetch_manifest(git_url, ref="main"):
         manifest_url = f"{raw_url}/{ref}/MANIFEST.toml"
     elif "gitlab.com" in git_url:
         manifest_url = f"{git_url}/-/raw/{ref}/MANIFEST.toml"
+    elif "git.sr.ht" in git_url:
+        manifest_url = f"{git_url}/blob/{ref}/MANIFEST.toml"
     else:
-        raise ValueError(f"Only GitHub and GitLab URLs are supported: {git_url}")
+        raise ValueError(f"Only GitHub, GitLab and Sourcehut URLs are supported: {git_url}")
 
     response = requests.get(manifest_url, timeout=10)
     response.raise_for_status()
