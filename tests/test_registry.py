@@ -26,7 +26,7 @@ def test_registry_save_and_load(tmp_path):
 
     plugin = {
         "id": "test-plugin",
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "git_url": "https://github.com/user/plugin",
     }

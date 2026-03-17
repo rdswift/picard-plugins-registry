@@ -25,7 +25,7 @@ def test_cli_ref_add(capsys):
             "plugins": [
                 {
                     "id": "test-plugin",
-                    "uuid": "12345678-1234-4234-8234-123456789abc",
+                    "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
                     "name": "Test Plugin",
                     "description": "A test plugin",
                     "git_url": "https://github.com/user/plugin",
@@ -80,7 +80,7 @@ def test_cli_ref_edit(capsys):
             "plugins": [
                 {
                     "id": "test-plugin",
-                    "uuid": "12345678-1234-4234-8234-123456789abc",
+                    "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
                     "name": "Test Plugin",
                     "description": "A test plugin",
                     "git_url": "https://github.com/user/plugin",
@@ -130,7 +130,7 @@ def test_cli_ref_rename(capsys):
             "plugins": [
                 {
                     "id": "test-plugin",
-                    "uuid": "12345678-1234-4234-8234-123456789abc",
+                    "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
                     "name": "Test Plugin",
                     "description": "A test plugin",
                     "git_url": "https://github.com/user/plugin",
@@ -170,7 +170,7 @@ def test_cli_ref_list(capsys):
             "plugins": [
                 {
                     "id": "test-plugin",
-                    "uuid": "12345678-1234-4234-8234-123456789abc",
+                    "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
                     "name": "Test Plugin",
                     "description": "A test plugin",
                     "git_url": "https://github.com/user/plugin",
@@ -211,7 +211,7 @@ def test_cli_ref_list_no_refs(capsys):
             "plugins": [
                 {
                     "id": "test-plugin",
-                    "uuid": "12345678-1234-4234-8234-123456789abc",
+                    "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
                     "name": "Test Plugin",
                     "description": "A test plugin",
                     "git_url": "https://github.com/user/plugin",
@@ -242,7 +242,7 @@ def test_cli_ref_remove(capsys):
             "plugins": [
                 {
                     "id": "test-plugin",
-                    "uuid": "12345678-1234-4234-8234-123456789abc",
+                    "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
                     "name": "Test Plugin",
                     "description": "A test plugin",
                     "git_url": "https://github.com/user/plugin",

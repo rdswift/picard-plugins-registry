@@ -12,7 +12,7 @@ def test_fetch_manifest_success(mock_get):
     """Test successful manifest fetch."""
     mock_response = Mock()
     mock_response.text = """
-uuid = "12345678-1234-4234-8234-123456789abc"
+uuid = "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
 name = "Test Plugin"
 version = "1.0.0"
 description = "A test plugin"
@@ -22,7 +22,7 @@ api = ["3.0"]
 
     manifest = fetch_manifest("https://github.com/user/plugin", "main")
 
-    assert manifest["uuid"] == "12345678-1234-4234-8234-123456789abc"
+    assert manifest["uuid"] == "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
     assert manifest["name"] == "Test Plugin"
     mock_get.assert_called_once()
 
@@ -32,7 +32,7 @@ def test_fetch_manifest_with_git_suffix(mock_get):
     """Test manifest fetch with .git suffix."""
     mock_response = Mock()
     mock_response.text = """
-uuid = "12345678-1234-4234-8234-123456789abc"
+uuid = "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
 name = "Test Plugin"
 version = "1.0.0"
 description = "A test plugin"
@@ -61,7 +61,7 @@ def test_fetch_manifest_supported(mock_get, repo_url, expected_manifest_url):
     """Test successful manifest fetch from GitLab."""
     mock_response = Mock()
     mock_response.text = """
-uuid = "12345678-1234-4234-8234-123456789abc"
+uuid = "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
 name = "Test Plugin"
 version = "1.0.0"
 description = "A test plugin"
@@ -71,7 +71,7 @@ api = ["3.0"]
 
     manifest = fetch_manifest(repo_url, "main")
 
-    assert manifest["uuid"] == "12345678-1234-4234-8234-123456789abc"
+    assert manifest["uuid"] == "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
     call_url = mock_get.call_args[0][0]
     assert expected_manifest_url in call_url
 
@@ -85,7 +85,7 @@ def test_fetch_manifest_unsupported():
 def test_validate_manifest_valid():
     """Test validation with valid manifest."""
     manifest = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",

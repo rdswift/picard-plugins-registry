@@ -25,7 +25,7 @@ def test_cli_plugin_list_verbose(mock_registry):
             {
                 "id": "test",
                 "name": "Test",
-                "uuid": "12345678-1234-4234-8234-123456789abc",
+                "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
                 "description": "Test plugin",
                 "git_url": "https://github.com/user/plugin",
                 "trust_level": "community",
@@ -189,7 +189,7 @@ def test_cli_plugin_show(mock_registry):
     mock_plugin = {
         "id": "test-plugin",
         "name": "Test Plugin",
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "description": "A test plugin",
         "git_url": "https://github.com/user/plugin",
         "trust_level": "community",

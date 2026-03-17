@@ -24,9 +24,9 @@ def test_add_blacklist_by_url(temp_registry):
 
 def test_add_blacklist_by_uuid(temp_registry):
     """Test adding blacklist entry by UUID."""
-    entry = add_blacklist(temp_registry, uuid="12345678-1234-4234-8234-123456789abc", reason="Malicious plugin")
+    entry = add_blacklist(temp_registry, uuid="6de6a3bf-a524-42b6-83cb-a36b2ec2e246", reason="Malicious plugin")
 
-    assert entry["uuid"] == "12345678-1234-4234-8234-123456789abc"
+    assert entry["uuid"] == "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
     assert entry["reason"] == "Malicious plugin"
     assert "url" not in entry
 
@@ -43,12 +43,12 @@ def test_add_blacklist_uuid_and_url(temp_registry):
     """Test adding blacklist entry with both UUID and URL."""
     entry = add_blacklist(
         temp_registry,
-        uuid="12345678-1234-4234-8234-123456789abc",
+        uuid="6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         url="https://github.com/bad/plugin",
         reason="Specific fork is malicious",
     )
 
-    assert entry["uuid"] == "12345678-1234-4234-8234-123456789abc"
+    assert entry["uuid"] == "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
     assert entry["url"] == "https://github.com/bad/plugin"
 
 
