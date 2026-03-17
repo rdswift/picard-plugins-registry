@@ -17,10 +17,9 @@ Copied from: https://github.com/metabrainz/picard
 
 These files are copied **without modification** from the Picard repository.
 
-To update:
+To update from GitHub:
 ```bash
-cp /path/to/picard/picard/plugin3/constants.py registry_lib/picard/
-cp /path/to/picard/picard/plugin3/validator.py registry_lib/picard/
+scripts/update_picard_files.sh
 ```
 
 **Note:** validator.py uses relative imports (`.constants`) which work in both Picard and registry contexts.
