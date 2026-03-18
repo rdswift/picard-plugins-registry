@@ -18,7 +18,7 @@ def temp_registry(tmp_path):
 def test_add_plugin_with_versioning_scheme_semver(mock_fetch, temp_registry):
     """Test adding plugin with semver versioning scheme."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -38,7 +38,7 @@ def test_add_plugin_with_versioning_scheme_semver(mock_fetch, temp_registry):
 def test_add_plugin_with_versioning_scheme_regex(mock_fetch, temp_registry):
     """Test adding plugin with custom regex versioning scheme."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -58,7 +58,7 @@ def test_add_plugin_with_versioning_scheme_regex(mock_fetch, temp_registry):
 def test_add_plugin_without_versioning_scheme(mock_fetch, temp_registry):
     """Test adding plugin without versioning scheme."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -77,7 +77,7 @@ def test_add_plugin_without_versioning_scheme(mock_fetch, temp_registry):
 def test_versioning_scheme_persists_in_registry(mock_fetch, temp_registry, tmp_path):
     """Test that versioning_scheme is saved and loaded correctly."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",

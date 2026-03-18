@@ -6,7 +6,7 @@ from registry_lib.picard.validator import validate_manifest_dict
 def test_validate_manifest_valid():
     """Test validation with valid manifest."""
     manifest = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -19,7 +19,7 @@ def test_validate_manifest_valid():
 def test_validate_manifest_missing_required():
     """Test validation with missing required field."""
     manifest = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
     }
     errors = validate_manifest_dict(manifest)

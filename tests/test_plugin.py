@@ -18,7 +18,7 @@ def temp_registry(tmp_path):
 def test_add_plugin_basic(mock_fetch, temp_registry):
     """Test adding a basic plugin."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -29,7 +29,7 @@ def test_add_plugin_basic(mock_fetch, temp_registry):
     plugin = add_plugin(temp_registry, "https://github.com/user/test-plugin", "community")
 
     assert plugin["id"] == "test-plugin"
-    assert plugin["uuid"] == "12345678-1234-4234-8234-123456789abc"
+    assert plugin["uuid"] == "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
     assert plugin["name"] == "Test Plugin"
     assert plugin["trust_level"] == "community"
     assert plugin["authors"] == ["Test Author"]
@@ -41,7 +41,7 @@ def test_add_plugin_basic(mock_fetch, temp_registry):
 def test_add_plugin_with_categories(mock_fetch, temp_registry):
     """Test adding plugin with custom categories."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -59,7 +59,7 @@ def test_add_plugin_with_categories(mock_fetch, temp_registry):
 def test_add_plugin_with_i18n(mock_fetch, temp_registry):
     """Test adding plugin with translations."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -78,7 +78,7 @@ def test_add_plugin_with_i18n(mock_fetch, temp_registry):
 def test_add_plugin_with_multi_refs(mock_fetch, temp_registry):
     """Test adding plugin with multiple refs."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -99,7 +99,7 @@ def test_add_plugin_with_multi_refs(mock_fetch, temp_registry):
 def test_add_plugin_invalid_trust_level(mock_fetch, temp_registry):
     """Test adding plugin with invalid trust level."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -114,7 +114,7 @@ def test_add_plugin_invalid_trust_level(mock_fetch, temp_registry):
 def test_add_plugin_duplicate(mock_fetch, temp_registry):
     """Test adding duplicate plugin by URL."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -131,7 +131,7 @@ def test_add_plugin_duplicate(mock_fetch, temp_registry):
 def test_add_plugin_duplicate_uuid(mock_fetch, temp_registry):
     """Test adding plugin with duplicate UUID."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -142,7 +142,7 @@ def test_add_plugin_duplicate_uuid(mock_fetch, temp_registry):
 
     # Try to add different plugin with same UUID
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Another Plugin",
         "version": "1.0.0",
         "description": "Another plugin",
@@ -157,7 +157,7 @@ def test_add_plugin_duplicate_uuid(mock_fetch, temp_registry):
 def test_add_plugin_duplicate_id(mock_fetch, temp_registry):
     """Test adding plugin with duplicate ID (derived from URL)."""
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -168,7 +168,7 @@ def test_add_plugin_duplicate_id(mock_fetch, temp_registry):
 
     # Try to add with different UUID but same derived ID (same URL base)
     mock_fetch.return_value = {
-        "uuid": "87654321-4321-4321-8321-cba987654321",
+        "uuid": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "A test plugin",
@@ -184,7 +184,7 @@ def test_update_plugin(mock_fetch, temp_registry):
     """Test updating plugin metadata."""
     # Add plugin first
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "Old description",
@@ -195,7 +195,7 @@ def test_update_plugin(mock_fetch, temp_registry):
 
     # Update with new manifest
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin Updated",
         "version": "2.0.0",
         "description": "New description",
@@ -217,7 +217,7 @@ def test_update_plugin_uuid_changed(mock_fetch, temp_registry):
     """Test that updating plugin with changed UUID raises error."""
     # Add plugin first
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "Test description",
@@ -228,7 +228,7 @@ def test_update_plugin_uuid_changed(mock_fetch, temp_registry):
 
     # Try to update with different UUID
     mock_fetch.return_value = {
-        "uuid": "87654321-4321-4321-8321-cba987654321",
+        "uuid": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "Test description",
@@ -247,7 +247,7 @@ def test_update_plugin_invalid_manifest(mock_fetch, temp_registry):
     """Test that updating plugin with invalid manifest raises error."""
     # Add plugin first
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "Test description",
@@ -258,7 +258,7 @@ def test_update_plugin_invalid_manifest(mock_fetch, temp_registry):
 
     # Try to update with invalid manifest (missing required field)
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         # Missing required 'name' field
         "description": "Test description",
         "api": ["3.0"],
@@ -276,7 +276,7 @@ def test_update_plugin_long_description_with_html(mock_fetch, mock_render_markdo
     """Test that updating plugin with HTML in long_description raises error and calls render_markdown."""
     # Add plugin first
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "version": "1.0.0",
         "description": "Test description",
@@ -286,7 +286,7 @@ def test_update_plugin_long_description_with_html(mock_fetch, mock_render_markdo
 
     # Try to update with HTML in long_description
     mock_fetch.return_value = {
-        "uuid": "12345678-1234-4234-8234-123456789abc",
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
         "name": "Test Plugin",
         "description": "Test description",
         "api": ["3.0"],
