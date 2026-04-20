@@ -73,6 +73,18 @@ registry plugin update plugin-id --ref develop
 
 **Note:** The UUID in MANIFEST.toml must match the registry. If it has changed, the update will fail with an error.
 
+### Validate Plugin Manifest
+
+Validate a plugin's MANIFEST.toml without adding it to the registry:
+
+```bash
+# Validate from default ref (main)
+registry plugin validate https://github.com/user/plugin-name
+
+# Validate from specific ref
+registry plugin validate https://github.com/user/plugin-name --ref develop
+```
+
 ### Edit a Plugin
 
 ```bash

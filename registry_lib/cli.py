@@ -5,6 +5,10 @@ import sys
 
 from registry_lib import colors
 from registry_lib.blacklist import add_blacklist
+from registry_lib.manifest import (
+    fetch_manifest,
+    validate_manifest,
+)
 from registry_lib.picard.constants import REGISTRY_TRUST_LEVELS
 from registry_lib.plugin import DEFAULT_REF, add_plugin, update_plugin
 from registry_lib.registry import Registry
@@ -360,6 +364,13 @@ def cmd_plugin_edit(args):
     print(colors.green(f"Updated plugin: {plugin['name']} ({plugin['id']})"))
 
 
+def cmd_plugin_validate_manifest(args):
+    """Validate a plugin's MANIFEST.toml without adding to registry."""
+    manifest = fetch_manifest(args.url, args.ref)
+    validate_manifest(manifest)
+    print(colors.green(f"✓ MANIFEST.toml valid: {manifest['name']} ({manifest['uuid']})"))
+
+
 def cmd_plugin_add(args):
     """Add plugin to registry."""
     registry = Registry(args.registry)
@@ -560,6 +571,12 @@ def main():
     show_parser = plugin_subparsers.add_parser("show", help="Show plugin details")
     show_parser.add_argument("plugin_id", help="Plugin ID")
     show_parser.set_defaults(func=cmd_plugin_show)
+
+    # plugin validate-manifest
+    vm_parser = plugin_subparsers.add_parser("validate", help="Validate a plugin's MANIFEST.toml")
+    vm_parser.add_argument("url", help="Git repository URL")
+    vm_parser.add_argument("--ref", default="main", help="Git ref (default: main)")
+    vm_parser.set_defaults(func=cmd_plugin_validate_manifest)
 
     # Ref commands
     ref_parser = subparsers.add_parser("ref", help="Plugin ref operations")
