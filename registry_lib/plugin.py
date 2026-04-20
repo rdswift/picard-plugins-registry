@@ -12,6 +12,8 @@ _OPTIONAL_MANIFEST_FIELDS = (
     "homepage",
     "license",
     "license_url",
+    "long_description",
+    "long_description_i18n",
     "maintainers",
     "name_i18n",
     "report_bugs_to",

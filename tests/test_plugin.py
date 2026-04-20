@@ -116,6 +116,25 @@ def test_add_plugin_with_optional_url_fields(mock_fetch, temp_registry):
 
 
 @patch("registry_lib.plugin.fetch_manifest")
+def test_add_plugin_with_long_description(mock_fetch, temp_registry):
+    """Test adding plugin with long_description and long_description_i18n."""
+    mock_fetch.return_value = {
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
+        "name": "Test Plugin",
+        "version": "1.0.0",
+        "description": "A test plugin",
+        "api": ["3.0"],
+        "long_description": "This is a longer description of the plugin.",
+        "long_description_i18n": {"de": "Dies ist eine längere Beschreibung."},
+    }
+
+    plugin = add_plugin(temp_registry, "https://github.com/user/test-plugin", "community")
+
+    assert plugin["long_description"] == "This is a longer description of the plugin."
+    assert plugin["long_description_i18n"] == {"de": "Dies ist eine längere Beschreibung."}
+
+
+@patch("registry_lib.plugin.fetch_manifest")
 def test_add_plugin_with_multi_refs(mock_fetch, temp_registry):
     """Test adding plugin with multiple refs."""
     mock_fetch.return_value = {

@@ -30,6 +30,10 @@ def _print_plugin_details(plugin):
         print(f"License URL: {plugin['license_url']}")
     if 'homepage' in plugin:
         print(f"Homepage: {plugin['homepage']}")
+    if 'long_description' in plugin:
+        print(f"Long Description: ({len(plugin['long_description'])} chars)")
+    for lang, text in sorted(plugin.get('long_description_i18n', {}).items()):
+        print(f"Long Description[{lang}]: ({len(text)} chars)")
     if 'versioning_scheme' in plugin:
         print(f"Versioning Scheme: {plugin['versioning_scheme']}")
     if 'redirect_from' in plugin:
@@ -155,6 +159,10 @@ def cmd_output(args):
                 print(f"  License URL: {plugin['license_url']}")
             if plugin.get('homepage'):
                 print(f"  Homepage: {plugin['homepage']}")
+            if plugin.get('long_description'):
+                print(f"  Long Description: ({len(plugin['long_description'])} chars)")
+            for lang, text in sorted(plugin.get('long_description_i18n', {}).items()):
+                print(f"  Long Description[{lang}]: ({len(text)} chars)")
             if plugin.get('redirects'):
                 print(f"  Redirects: {', '.join(plugin['redirects'])}")
             if plugin.get('refs'):
