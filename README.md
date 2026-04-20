@@ -250,6 +250,24 @@ registry output --format human
 registry output --format json > plugins.json
 ```
 
+### Display Registry
+
+Shortcut for `registry output --format human` with colorized output:
+
+```bash
+registry display
+```
+
+### Global Options
+
+```bash
+# Disable colored output
+registry --no-color <command>
+```
+
+Colors are automatically disabled when output is piped or redirected,
+or when the `NO_COLOR` environment variable is set.
+
 ## Trust Levels
 
 - **official** - Maintained by MusicBrainz Picard team
