@@ -10,6 +10,34 @@ from registry_lib.registry import Registry
 from registry_lib.utils import now_iso8601
 
 
+def _print_plugin_details(plugin):
+    """Print detailed plugin information."""
+    print(f"ID: {plugin['id']}")
+    print(f"Name: {plugin['name']}")
+    print(f"UUID: {plugin['uuid']}")
+    print(f"Description: {plugin['description']}")
+    print(f"URL: {plugin['git_url']}")
+    print(f"Trust Level: {plugin['trust_level']}")
+    print(f"Categories: {', '.join(plugin.get('categories', []))}")
+    print(f"Authors: {', '.join(plugin.get('authors', []))}")
+    if 'maintainers' in plugin:
+        print(f"Maintainers: {', '.join(plugin['maintainers'])}")
+    if 'report_bugs_to' in plugin:
+        print(f"Report Bugs To: {plugin['report_bugs_to']}")
+    if 'license' in plugin:
+        print(f"License: {plugin['license']}")
+    if 'license_url' in plugin:
+        print(f"License URL: {plugin['license_url']}")
+    if 'homepage' in plugin:
+        print(f"Homepage: {plugin['homepage']}")
+    if 'versioning_scheme' in plugin:
+        print(f"Versioning Scheme: {plugin['versioning_scheme']}")
+    if 'redirect_from' in plugin:
+        print(f"Redirects from: {', '.join(plugin['redirect_from'])}")
+    print(f"Added: {plugin['added_at']}")
+    print(f"Updated: {plugin['updated_at']}")
+
+
 def get_plugin_or_exit(registry, plugin_id):
     """Get plugin from registry or exit with error.
 
@@ -380,30 +408,7 @@ def cmd_plugin_list(args):
         if args.verbose:
             if i > 0:
                 print()  # Blank line between plugins
-            print(f"ID: {plugin['id']}")
-            print(f"Name: {plugin['name']}")
-            print(f"UUID: {plugin['uuid']}")
-            print(f"Description: {plugin['description']}")
-            print(f"URL: {plugin['git_url']}")
-            print(f"Trust Level: {plugin['trust_level']}")
-            print(f"Categories: {', '.join(plugin.get('categories', []))}")
-            print(f"Authors: {', '.join(plugin.get('authors', []))}")
-            if 'maintainers' in plugin:
-                print(f"Maintainers: {', '.join(plugin['maintainers'])}")
-            if 'report_bugs_to' in plugin:
-                print(f"Report Bugs To: {plugin['report_bugs_to']}")
-            if 'license' in plugin:
-                print(f"License: {plugin['license']}")
-            if 'license_url' in plugin:
-                print(f"License URL: {plugin['license_url']}")
-            if 'homepage' in plugin:
-                print(f"Homepage: {plugin['homepage']}")
-            if 'versioning_scheme' in plugin:
-                print(f"Versioning Scheme: {plugin['versioning_scheme']}")
-            if 'redirect_from' in plugin:
-                print(f"Redirects from: {', '.join(plugin['redirect_from'])}")
-            print(f"Added: {plugin['added_at']}")
-            print(f"Updated: {plugin['updated_at']}")
+            _print_plugin_details(plugin)
         else:
             print(f"{plugin['id']}: {plugin['name']} ({plugin['trust_level']})")
 
@@ -412,31 +417,7 @@ def cmd_plugin_show(args):
     """Show plugin details."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
-
-    print(f"ID: {plugin['id']}")
-    print(f"Name: {plugin['name']}")
-    print(f"UUID: {plugin['uuid']}")
-    print(f"Description: {plugin['description']}")
-    print(f"URL: {plugin['git_url']}")
-    print(f"Trust Level: {plugin['trust_level']}")
-    print(f"Categories: {', '.join(plugin.get('categories', []))}")
-    print(f"Authors: {', '.join(plugin.get('authors', []))}")
-    if 'maintainers' in plugin:
-        print(f"Maintainers: {', '.join(plugin['maintainers'])}")
-    if 'report_bugs_to' in plugin:
-        print(f"Report Bugs To: {plugin['report_bugs_to']}")
-    if 'license' in plugin:
-        print(f"License: {plugin['license']}")
-    if 'license_url' in plugin:
-        print(f"License URL: {plugin['license_url']}")
-    if 'homepage' in plugin:
-        print(f"Homepage: {plugin['homepage']}")
-    if 'versioning_scheme' in plugin:
-        print(f"Versioning Scheme: {plugin['versioning_scheme']}")
-    if 'redirect_from' in plugin:
-        print(f"Redirects from: {', '.join(plugin['redirect_from'])}")
-    print(f"Added: {plugin['added_at']}")
-    print(f"Updated: {plugin['updated_at']}")
+    _print_plugin_details(plugin)
 
 
 def cmd_blacklist_add(args):
