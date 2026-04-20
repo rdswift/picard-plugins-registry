@@ -95,6 +95,27 @@ def test_add_plugin_with_report_bugs_to(mock_fetch, temp_registry):
 
 
 @patch("registry_lib.plugin.fetch_manifest")
+def test_add_plugin_with_optional_url_fields(mock_fetch, temp_registry):
+    """Test adding plugin with license, license_url, and homepage."""
+    mock_fetch.return_value = {
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
+        "name": "Test Plugin",
+        "version": "1.0.0",
+        "description": "A test plugin",
+        "api": ["3.0"],
+        "license": "GPL-2.0-or-later",
+        "license_url": "https://www.gnu.org/licenses/gpl-2.0.html",
+        "homepage": "https://example.com/test-plugin",
+    }
+
+    plugin = add_plugin(temp_registry, "https://github.com/user/test-plugin", "community")
+
+    assert plugin["license"] == "GPL-2.0-or-later"
+    assert plugin["license_url"] == "https://www.gnu.org/licenses/gpl-2.0.html"
+    assert plugin["homepage"] == "https://example.com/test-plugin"
+
+
+@patch("registry_lib.plugin.fetch_manifest")
 def test_add_plugin_with_multi_refs(mock_fetch, temp_registry):
     """Test adding plugin with multiple refs."""
     mock_fetch.return_value = {

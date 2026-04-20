@@ -32,6 +32,9 @@ def test_cli_plugin_list_verbose(mock_registry):
                 "categories": ["metadata"],
                 "authors": ["Test Author"],
                 "report_bugs_to": "https://github.com/user/plugin/issues",
+                "license": "GPL-2.0-or-later",
+                "license_url": "https://www.gnu.org/licenses/gpl-2.0.html",
+                "homepage": "https://example.com/plugin",
                 "added_at": "2025-01-01T00:00:00Z",
                 "updated_at": "2025-01-01T00:00:00Z",
             }
@@ -197,6 +200,9 @@ def test_cli_plugin_show(mock_registry):
         "categories": ["metadata"],
         "authors": ["Test Author"],
         "report_bugs_to": "https://github.com/user/plugin/issues",
+        "license": "GPL-2.0-or-later",
+        "license_url": "https://www.gnu.org/licenses/gpl-2.0.html",
+        "homepage": "https://example.com/plugin",
         "added_at": "2025-01-01T00:00:00Z",
         "updated_at": "2025-01-01T00:00:00Z",
     }

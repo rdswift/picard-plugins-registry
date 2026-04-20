@@ -9,6 +9,9 @@ DEFAULT_REF = "main"
 
 _OPTIONAL_MANIFEST_FIELDS = (
     "description_i18n",
+    "homepage",
+    "license",
+    "license_url",
     "maintainers",
     "name_i18n",
     "report_bugs_to",

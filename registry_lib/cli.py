@@ -123,6 +123,10 @@ def cmd_output(args):
                 print(f"  Report Bugs To: {plugin['report_bugs_to']}")
             if plugin.get('license'):
                 print(f"  License: {plugin['license']}")
+            if plugin.get('license_url'):
+                print(f"  License URL: {plugin['license_url']}")
+            if plugin.get('homepage'):
+                print(f"  Homepage: {plugin['homepage']}")
             if plugin.get('redirects'):
                 print(f"  Redirects: {', '.join(plugin['redirects'])}")
             if plugin.get('refs'):
@@ -388,6 +392,12 @@ def cmd_plugin_list(args):
                 print(f"Maintainers: {', '.join(plugin['maintainers'])}")
             if 'report_bugs_to' in plugin:
                 print(f"Report Bugs To: {plugin['report_bugs_to']}")
+            if 'license' in plugin:
+                print(f"License: {plugin['license']}")
+            if 'license_url' in plugin:
+                print(f"License URL: {plugin['license_url']}")
+            if 'homepage' in plugin:
+                print(f"Homepage: {plugin['homepage']}")
             if 'versioning_scheme' in plugin:
                 print(f"Versioning Scheme: {plugin['versioning_scheme']}")
             if 'redirect_from' in plugin:
@@ -415,6 +425,12 @@ def cmd_plugin_show(args):
         print(f"Maintainers: {', '.join(plugin['maintainers'])}")
     if 'report_bugs_to' in plugin:
         print(f"Report Bugs To: {plugin['report_bugs_to']}")
+    if 'license' in plugin:
+        print(f"License: {plugin['license']}")
+    if 'license_url' in plugin:
+        print(f"License URL: {plugin['license_url']}")
+    if 'homepage' in plugin:
+        print(f"Homepage: {plugin['homepage']}")
     if 'versioning_scheme' in plugin:
         print(f"Versioning Scheme: {plugin['versioning_scheme']}")
     if 'redirect_from' in plugin:
