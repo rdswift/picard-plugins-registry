@@ -4,7 +4,10 @@ from unittest.mock import patch
 
 import pytest
 
-from registry_lib.plugin import add_plugin
+from registry_lib.plugin import (
+    add_plugin,
+    update_plugin,
+)
 from registry_lib.registry import Registry
 
 
@@ -72,6 +75,23 @@ def test_add_plugin_with_i18n(mock_fetch, temp_registry):
 
     assert plugin["name_i18n"] == {"de": "Test Plugin DE"}
     assert plugin["description_i18n"] == {"de": "Ein Test Plugin"}
+
+
+@patch("registry_lib.plugin.fetch_manifest")
+def test_add_plugin_with_report_bugs_to(mock_fetch, temp_registry):
+    """Test adding plugin with report_bugs_to."""
+    mock_fetch.return_value = {
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
+        "name": "Test Plugin",
+        "version": "1.0.0",
+        "description": "A test plugin",
+        "api": ["3.0"],
+        "report_bugs_to": "https://github.com/user/test-plugin/issues",
+    }
+
+    plugin = add_plugin(temp_registry, "https://github.com/user/test-plugin", "community")
+
+    assert plugin["report_bugs_to"] == "https://github.com/user/test-plugin/issues"
 
 
 @patch("registry_lib.plugin.fetch_manifest")
@@ -203,13 +223,47 @@ def test_update_plugin(mock_fetch, temp_registry):
         "authors": ["New Author"],
     }
 
-    from registry_lib.plugin import update_plugin
-
     plugin = update_plugin(temp_registry, "test-plugin")
 
     assert plugin["name"] == "Test Plugin Updated"
     assert plugin["description"] == "New description"
     assert plugin["authors"] == ["New Author"]
+
+
+@patch("registry_lib.plugin.fetch_manifest")
+def test_update_plugin_report_bugs_to(mock_fetch, temp_registry):
+    """Test that report_bugs_to is synced on update."""
+    mock_fetch.return_value = {
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
+        "name": "Test Plugin",
+        "version": "1.0.0",
+        "description": "A test plugin",
+        "api": ["3.0"],
+    }
+    add_plugin(temp_registry, "https://github.com/user/test-plugin", "community")
+
+    # Update adds report_bugs_to
+    mock_fetch.return_value = {
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
+        "name": "Test Plugin",
+        "version": "1.1.0",
+        "description": "A test plugin",
+        "api": ["3.0"],
+        "report_bugs_to": "https://github.com/user/test-plugin/issues",
+    }
+    plugin = update_plugin(temp_registry, "test-plugin")
+    assert plugin["report_bugs_to"] == "https://github.com/user/test-plugin/issues"
+
+    # Update removes report_bugs_to
+    mock_fetch.return_value = {
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
+        "name": "Test Plugin",
+        "version": "1.2.0",
+        "description": "A test plugin",
+        "api": ["3.0"],
+    }
+    plugin = update_plugin(temp_registry, "test-plugin")
+    assert "report_bugs_to" not in plugin
 
 
 @patch("registry_lib.plugin.fetch_manifest")
@@ -235,8 +289,6 @@ def test_update_plugin_uuid_changed(mock_fetch, temp_registry):
         "api": ["3.0"],
         "authors": ["Test Author"],
     }
-
-    from registry_lib.plugin import update_plugin
 
     with pytest.raises(ValueError, match="UUID mismatch.*UUIDs must not change"):
         update_plugin(temp_registry, "test-plugin")
@@ -264,8 +316,6 @@ def test_update_plugin_invalid_manifest(mock_fetch, temp_registry):
         "api": ["3.0"],
     }
 
-    from registry_lib.plugin import update_plugin
-
     with pytest.raises(ValueError, match="Manifest validation failed.*Missing required field: name"):
         update_plugin(temp_registry, "test-plugin")
 
@@ -292,8 +342,6 @@ def test_update_plugin_long_description_with_html(mock_fetch, mock_render_markdo
         "api": ["3.0"],
         "long_description": "This is a <b>bold</b> description with HTML tags",
     }
-
-    from registry_lib.plugin import update_plugin
 
     with pytest.raises(ValueError, match="Manifest validation failed.*contains HTML tags"):
         update_plugin(temp_registry, "test-plugin")

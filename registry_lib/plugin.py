@@ -7,6 +7,13 @@ from registry_lib.utils import derive_plugin_id, now_iso8601
 
 DEFAULT_REF = "main"
 
+_OPTIONAL_MANIFEST_FIELDS = (
+    "description_i18n",
+    "maintainers",
+    "name_i18n",
+    "report_bugs_to",
+)
+
 
 def _sync_optional_fields(plugin, manifest, fields):
     """Sync optional fields from manifest to plugin.
@@ -84,7 +91,7 @@ def add_plugin(registry, git_url, trust_level, categories=None, refs=None, versi
     }
 
     # Add optional fields
-    _sync_optional_fields(plugin, manifest, ["maintainers", "name_i18n", "description_i18n"])
+    _sync_optional_fields(plugin, manifest, _OPTIONAL_MANIFEST_FIELDS)
 
     # Add refs if not default single main
     if not (len(refs_list) == 1 and refs_list[0]["name"] == DEFAULT_REF and "min_api_version" not in refs_list[0]):
@@ -174,6 +181,6 @@ def update_plugin(registry, plugin_id, ref=None):
     plugin["updated_at"] = now_iso8601()
 
     # Update optional fields
-    _sync_optional_fields(plugin, manifest, ["maintainers", "name_i18n", "description_i18n"])
+    _sync_optional_fields(plugin, manifest, _OPTIONAL_MANIFEST_FIELDS)
 
     return plugin

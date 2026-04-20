@@ -119,6 +119,8 @@ def cmd_output(args):
                 print(f"  Authors: {', '.join(plugin['authors'])}")
             if plugin.get('maintainers'):
                 print(f"  Maintainers: {', '.join(plugin['maintainers'])}")
+            if plugin.get('report_bugs_to'):
+                print(f"  Report Bugs To: {plugin['report_bugs_to']}")
             if plugin.get('license'):
                 print(f"  License: {plugin['license']}")
             if plugin.get('redirects'):
@@ -384,6 +386,8 @@ def cmd_plugin_list(args):
             print(f"Authors: {', '.join(plugin.get('authors', []))}")
             if 'maintainers' in plugin:
                 print(f"Maintainers: {', '.join(plugin['maintainers'])}")
+            if 'report_bugs_to' in plugin:
+                print(f"Report Bugs To: {plugin['report_bugs_to']}")
             if 'versioning_scheme' in plugin:
                 print(f"Versioning Scheme: {plugin['versioning_scheme']}")
             if 'redirect_from' in plugin:
@@ -409,6 +413,8 @@ def cmd_plugin_show(args):
     print(f"Authors: {', '.join(plugin.get('authors', []))}")
     if 'maintainers' in plugin:
         print(f"Maintainers: {', '.join(plugin['maintainers'])}")
+    if 'report_bugs_to' in plugin:
+        print(f"Report Bugs To: {plugin['report_bugs_to']}")
     if 'versioning_scheme' in plugin:
         print(f"Versioning Scheme: {plugin['versioning_scheme']}")
     if 'redirect_from' in plugin:
