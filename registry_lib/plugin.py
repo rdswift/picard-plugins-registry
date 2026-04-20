@@ -1,5 +1,7 @@
 """Plugin operations."""
 
+import warnings
+
 from registry_lib.manifest import fetch_manifest, validate_manifest
 from registry_lib.picard.constants import REGISTRY_TRUST_LEVELS
 from registry_lib.utils import derive_plugin_id, now_iso8601
@@ -20,6 +22,19 @@ _OPTIONAL_MANIFEST_FIELDS = (
 )
 
 
+def _strip_field(value, field_name, plugin_id):
+    """Strip whitespace from a string value, warning if it differs."""
+    if isinstance(value, str):
+        stripped = value.strip()
+        if stripped != value:
+            warnings.warn(
+                f"Plugin '{plugin_id}': field '{field_name}' has leading/trailing whitespace",
+                stacklevel=2,
+            )
+        return stripped
+    return value
+
+
 def _sync_optional_fields(plugin, manifest, fields):
     """Sync optional fields from manifest to plugin.
 
@@ -28,9 +43,10 @@ def _sync_optional_fields(plugin, manifest, fields):
         manifest: Manifest dict to read from
         fields: List of field names to sync
     """
+    plugin_id = plugin["id"]
     for field in fields:
         if field in manifest:
-            plugin[field] = manifest[field]
+            plugin[field] = _strip_field(manifest[field], field, plugin_id)
         elif field in plugin:
             del plugin[field]
 
@@ -85,8 +101,8 @@ def add_plugin(registry, git_url, trust_level, categories=None, refs=None, versi
     plugin = {
         "id": plugin_id,
         "uuid": manifest["uuid"],
-        "name": manifest["name"],
-        "description": manifest["description"],
+        "name": _strip_field(manifest["name"], "name", plugin_id),
+        "description": _strip_field(manifest["description"], "description", plugin_id),
         "git_url": git_url,
         "categories": categories or manifest.get("categories", []),
         "trust_level": trust_level,
@@ -180,8 +196,8 @@ def update_plugin(registry, plugin_id, ref=None):
         )
 
     # Update fields from manifest
-    plugin["name"] = manifest["name"]
-    plugin["description"] = manifest["description"]
+    plugin["name"] = _strip_field(manifest["name"], "name", plugin_id)
+    plugin["description"] = _strip_field(manifest["description"], "description", plugin_id)
     plugin["authors"] = manifest.get("authors", [])
     plugin["updated_at"] = now_iso8601()
 
