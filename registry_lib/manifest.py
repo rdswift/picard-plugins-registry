@@ -17,6 +17,8 @@ GIT_SOURCES = {
     "github.com": lambda url, ref, path: (url.replace("github.com", "raw.githubusercontent.com") + f"/{ref}/{path}"),
     "gitlab.com": lambda url, ref, path: f"{url}/-/raw/{ref}/{path}",
     "git.sr.ht": lambda url, ref, path: f"{url}/blob/{ref}/{path}",
+    "codeberg.org": lambda url, ref, path: f"{url}/raw/branch/{ref}/{path}",
+    "bitbucket.org": lambda url, ref, path: f"{url}/raw/{ref}/{path}",
 }
 
 

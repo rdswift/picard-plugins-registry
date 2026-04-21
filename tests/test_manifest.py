@@ -61,6 +61,8 @@ api = ["3.0"]
         ("https://github.com/user/plugin", "raw.githubusercontent.com/user/plugin/main/MANIFEST.toml"),
         ("https://gitlab.com/user/plugin", "gitlab.com/user/plugin/-/raw/main/MANIFEST.toml"),
         ("https://git.sr.ht/~user/plugin", "git.sr.ht/~user/plugin/blob/main/MANIFEST.toml"),
+        ("https://codeberg.org/user/plugin", "codeberg.org/user/plugin/raw/branch/main/MANIFEST.toml"),
+        ("https://bitbucket.org/user/plugin", "bitbucket.org/user/plugin/raw/main/MANIFEST.toml"),
     ],
 )
 @patch("registry_lib.manifest.requests.get")
@@ -86,7 +88,7 @@ api = ["3.0"]
 def test_fetch_manifest_unsupported():
     """Test fetch manifest with unsupported URL."""
     with pytest.raises(ValueError, match="Unsupported git host"):
-        fetch_manifest("https://bitbucket.org/user/plugin")
+        fetch_manifest("https://unknown.example.com/user/plugin")
 
 
 @pytest.mark.parametrize(
@@ -110,6 +112,18 @@ def test_fetch_manifest_unsupported():
             "some/path.txt",
             "https://git.sr.ht/~user/plugin/blob/main/some/path.txt",
         ),
+        (
+            "https://codeberg.org/user/plugin",
+            "main",
+            "MANIFEST.toml",
+            "https://codeberg.org/user/plugin/raw/branch/main/MANIFEST.toml",
+        ),
+        (
+            "https://bitbucket.org/user/plugin",
+            "main",
+            "MANIFEST.toml",
+            "https://bitbucket.org/user/plugin/raw/main/MANIFEST.toml",
+        ),
     ],
 )
 def test_raw_url(repo_url, ref, path, expected):
@@ -127,7 +141,7 @@ def test_raw_url_strips_git_suffix():
 def test_raw_url_unsupported():
     """Test raw_url with unsupported host."""
     with pytest.raises(ValueError, match="Unsupported git host"):
-        raw_url("https://bitbucket.org/user/plugin", "main", "file.txt")
+        raw_url("https://unknown.example.com/user/plugin", "main", "file.txt")
 
 
 def test_validate_manifest_valid():
