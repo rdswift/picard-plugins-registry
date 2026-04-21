@@ -1,9 +1,16 @@
 """Blacklist operations."""
 
+from registry_lib.registry import Registry
 from registry_lib.utils import now_iso8601
 
 
-def add_blacklist(registry, url=None, uuid=None, url_regex=None, reason=None):
+def add_blacklist(
+    registry: Registry,
+    url: str | None = None,
+    uuid: str | None = None,
+    url_regex: str | None = None,
+    reason: str | None = None,
+) -> dict[str, str]:
     """Add entry to blacklist.
 
     Args:
