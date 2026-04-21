@@ -154,6 +154,7 @@ def test_raw_url(repo_url, ref, path, expected):
 def test_raw_url_strips_git_suffix():
     """Test raw_url strips .git suffix."""
     url = raw_url("https://github.com/user/plugin.git", "main", "file.txt")
+    assert url is not None
     assert "plugin.git" not in url
     assert "plugin/main/file.txt" in url
 
