@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+from typing import Any
 
 from registry_lib import colors
 from registry_lib.blacklist import add_blacklist
@@ -15,7 +16,7 @@ from registry_lib.registry import Registry
 from registry_lib.utils import now_iso8601
 
 
-def _format_trust(trust_level):
+def _format_trust(trust_level: str) -> str:
     """Format trust level with color."""
     if trust_level == "official":
         return colors.green(trust_level)
@@ -24,7 +25,7 @@ def _format_trust(trust_level):
     return trust_level
 
 
-def _print_plugin_details(plugin, indent=""):
+def _print_plugin_details(plugin: dict[str, Any], indent: str = "") -> None:
     """Print detailed plugin information."""
     print(f"{indent}{colors.dim('ID:')} {colors.cyan(plugin['id'])}")
     print(f"{indent}{colors.dim('Name:')} {colors.bold(plugin['name'])}")
@@ -56,7 +57,7 @@ def _print_plugin_details(plugin, indent=""):
     print(f"{indent}{colors.dim('Updated:')} {plugin['updated_at']}")
 
 
-def get_plugin_or_exit(registry, plugin_id):
+def get_plugin_or_exit(registry: Registry, plugin_id: str) -> dict[str, Any]:
     """Get plugin from registry or exit with error.
 
     Args:
@@ -73,7 +74,7 @@ def get_plugin_or_exit(registry, plugin_id):
     return plugin
 
 
-def cmd_validate(args):
+def cmd_validate(args: argparse.Namespace) -> None:
     """Validate registry file."""
     registry = Registry(args.registry)
     errors = []
@@ -105,7 +106,7 @@ def cmd_validate(args):
         )
 
 
-def cmd_stats(args):
+def cmd_stats(args: argparse.Namespace) -> None:
     """Show registry statistics."""
     registry = Registry(args.registry)
     plugins = registry.data['plugins']
@@ -134,7 +135,7 @@ def cmd_stats(args):
         print(f"  {cat}: {count}")
 
 
-def cmd_output(args):
+def cmd_output(args: argparse.Namespace) -> None:
     """Output registry in specified format."""
     import json
 
@@ -174,13 +175,13 @@ def cmd_output(args):
         sys.exit(1)
 
 
-def cmd_display(args):
+def cmd_display(args: argparse.Namespace) -> None:
     """Display registry in human-readable format."""
     args.format = "human"
     cmd_output(args)
 
 
-def cmd_plugin_redirect(args):
+def cmd_plugin_redirect(args: argparse.Namespace) -> None:
     """Add, remove, or list redirects for plugin that moved URLs."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
@@ -219,7 +220,7 @@ def cmd_plugin_redirect(args):
         print(colors.green(f"Added redirect: {args.old_url} -> {plugin['git_url']}"))
 
 
-def cmd_plugin_ref_add(args):
+def cmd_plugin_ref_add(args: argparse.Namespace) -> None:
     """Add ref to plugin."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
@@ -249,7 +250,7 @@ def cmd_plugin_ref_add(args):
     print(colors.green(f"Added ref: {args.ref_name}"))
 
 
-def cmd_plugin_ref_edit(args):
+def cmd_plugin_ref_edit(args: argparse.Namespace) -> None:
     """Edit ref in plugin."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
@@ -289,7 +290,7 @@ def cmd_plugin_ref_edit(args):
     print(colors.green(f"Updated ref: {args.new_name if args.new_name else args.ref_name}"))
 
 
-def cmd_plugin_ref_remove(args):
+def cmd_plugin_ref_remove(args: argparse.Namespace) -> None:
     """Remove ref from plugin."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
@@ -315,7 +316,7 @@ def cmd_plugin_ref_remove(args):
     print(colors.green(f"Removed ref: {args.ref_name}"))
 
 
-def cmd_plugin_ref_list(args):
+def cmd_plugin_ref_list(args: argparse.Namespace) -> None:
     """List refs for plugin."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
@@ -341,7 +342,7 @@ def cmd_plugin_ref_list(args):
         print(' '.join(parts))
 
 
-def cmd_plugin_edit(args):
+def cmd_plugin_edit(args: argparse.Namespace) -> None:
     """Edit plugin in registry."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
@@ -364,14 +365,14 @@ def cmd_plugin_edit(args):
     print(colors.green(f"Updated plugin: {plugin['name']} ({plugin['id']})"))
 
 
-def cmd_plugin_validate_manifest(args):
+def cmd_plugin_validate_manifest(args: argparse.Namespace) -> None:
     """Validate a plugin's MANIFEST.toml without adding to registry."""
     manifest = fetch_manifest(args.source, args.ref, allow_local=True)
     validate_manifest(manifest)
     print(colors.green(f"✓ MANIFEST.toml valid: {manifest['name']} ({manifest['uuid']})"))
 
 
-def cmd_plugin_add(args):
+def cmd_plugin_add(args: argparse.Namespace) -> None:
     """Add plugin to registry."""
     registry = Registry(args.registry)
     categories = args.categories.split(',') if args.categories else None
@@ -382,7 +383,7 @@ def cmd_plugin_add(args):
     print(colors.green(f"Added plugin: {plugin['name']} ({plugin['id']})"))
 
 
-def cmd_plugin_update(args):
+def cmd_plugin_update(args: argparse.Namespace) -> None:
     """Update plugin metadata from MANIFEST."""
     registry = Registry(args.registry)
     plugin = update_plugin(registry, args.plugin_id, ref=args.ref)
@@ -390,7 +391,7 @@ def cmd_plugin_update(args):
     print(colors.green(f"Updated plugin: {plugin['name']} ({plugin['id']})"))
 
 
-def cmd_plugin_remove(args):
+def cmd_plugin_remove(args: argparse.Namespace) -> None:
     """Remove plugin from registry."""
     registry = Registry(args.registry)
     registry.remove_plugin(args.plugin_id)
@@ -398,7 +399,7 @@ def cmd_plugin_remove(args):
     print(colors.green(f"Removed plugin: {args.plugin_id}"))
 
 
-def cmd_plugin_list(args):
+def cmd_plugin_list(args: argparse.Namespace) -> None:
     """List plugins in registry."""
     registry = Registry(args.registry)
     plugins = registry.data["plugins"]
@@ -423,14 +424,14 @@ def cmd_plugin_list(args):
             print(f"{colors.cyan(plugin['id'])}: {plugin['name']} ({_format_trust(plugin['trust_level'])})")
 
 
-def cmd_plugin_show(args):
+def cmd_plugin_show(args: argparse.Namespace) -> None:
     """Show plugin details."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
     _print_plugin_details(plugin)
 
 
-def cmd_blacklist_add(args):
+def cmd_blacklist_add(args: argparse.Namespace) -> None:
     """Add entry to blacklist."""
     registry = Registry(args.registry)
     add_blacklist(registry, url=args.url, uuid=args.uuid, url_regex=args.url_regex, reason=args.reason)
@@ -439,7 +440,7 @@ def cmd_blacklist_add(args):
     print(colors.green(f"Blacklisted: {identifier}"))
 
 
-def cmd_blacklist_remove(args):
+def cmd_blacklist_remove(args: argparse.Namespace) -> None:
     """Remove entry from blacklist."""
     registry = Registry(args.registry)
     registry.remove_blacklist(url=args.url, uuid=args.uuid)
@@ -448,7 +449,7 @@ def cmd_blacklist_remove(args):
     print(colors.green(f"Removed from blacklist: {identifier}"))
 
 
-def cmd_blacklist_list(args):
+def cmd_blacklist_list(args: argparse.Namespace) -> None:
     """List blacklisted entries."""
     registry = Registry(args.registry)
     for entry in registry.data["blacklist"]:
@@ -463,7 +464,7 @@ def cmd_blacklist_list(args):
         print(f"{identifier_str}: {entry['reason']}")
 
 
-def cmd_blacklist_show(args):
+def cmd_blacklist_show(args: argparse.Namespace) -> None:
     """Show blacklist entry details."""
     registry = Registry(args.registry)
 
@@ -490,7 +491,7 @@ def cmd_blacklist_show(args):
     print(f"{colors.dim('Blacklisted at:')} {entry['blacklisted_at']}")
 
 
-def main():
+def main() -> None:
     """Main CLI entry point."""
     # Ensure utf-8 is used for IO encoding on all platforms. Specifically on Windows
     # this fixes encoding issues during console output in certain cases.
