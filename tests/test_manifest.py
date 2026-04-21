@@ -10,6 +10,8 @@ from unittest.mock import (
 import pytest
 
 from registry_lib.manifest import (
+    _fetch_file_git_cli,
+    _fetch_file_pygit2,
     fetch_file_via_clone,
     fetch_manifest,
     raw_url,
@@ -162,10 +164,10 @@ def test_raw_url_unknown_host():
 
 @patch("registry_lib.manifest.subprocess.run")
 def test_fetch_file_via_clone_success(mock_run):
-    """Test successful file fetch via shallow clone."""
+    """Test successful file fetch via git CLI."""
     manifest_content = 'name = "Test"\n'
     with patch("builtins.open", mock_open(read_data=manifest_content)):
-        result = fetch_file_via_clone("https://example.com/repo", "main", "MANIFEST.toml")
+        result = _fetch_file_git_cli("https://example.com/repo", "main", "MANIFEST.toml")
 
     assert result == manifest_content
     assert mock_run.call_count == 2
@@ -173,14 +175,58 @@ def test_fetch_file_via_clone_success(mock_run):
 
 @patch("registry_lib.manifest.subprocess.run")
 def test_fetch_file_via_clone_clone_fails(mock_run):
-    """Test clone failure raises ValueError."""
+    """Test git CLI clone failure raises ValueError."""
     mock_run.side_effect = subprocess.CalledProcessError(
         128,
         "git",
         stderr=b"fatal: repository not found",
     )
     with pytest.raises(ValueError, match="Failed to clone"):
-        fetch_file_via_clone("https://example.com/repo", "main", "MANIFEST.toml")
+        _fetch_file_git_cli("https://example.com/repo", "main", "MANIFEST.toml")
+
+
+def test_fetch_file_via_clone_prefers_pygit2():
+    """Test fetch_file_via_clone uses pygit2 when available."""
+    with patch("registry_lib.manifest.pygit2", new=Mock()):
+        with patch("registry_lib.manifest._fetch_file_pygit2", return_value="content") as mock_pygit2:
+            result = fetch_file_via_clone("https://example.com/repo", "main", "file.txt")
+
+    assert result == "content"
+    mock_pygit2.assert_called_once()
+
+
+def test_fetch_file_via_clone_falls_back_to_git_cli():
+    """Test fetch_file_via_clone falls back to git CLI when pygit2 is unavailable."""
+    with patch("registry_lib.manifest.pygit2", new=None):
+        with patch("registry_lib.manifest._fetch_file_git_cli", return_value="content") as mock_cli:
+            result = fetch_file_via_clone("https://example.com/repo", "main", "file.txt")
+
+    assert result == "content"
+    mock_cli.assert_called_once()
+
+
+@patch("registry_lib.manifest.shutil.rmtree")
+def test_fetch_file_pygit2_success(mock_rmtree):
+    """Test successful file fetch via pygit2."""
+    mock_blob = Mock()
+    mock_blob.data = b'name = "Test"\n'
+    mock_tree = {"MANIFEST.toml": Mock(id="blob-id")}
+    mock_commit = Mock()
+    mock_commit.type = 1  # GIT_OBJECT_COMMIT
+    mock_commit.peel.return_value = mock_tree
+    mock_repo = Mock()
+    mock_repo.revparse_single.return_value = mock_commit
+    mock_repo.__getitem__ = Mock(return_value=mock_blob)
+
+    with (
+        patch("registry_lib.manifest.pygit2") as mock_pygit2,
+        patch("registry_lib.manifest.tempfile.mkdtemp", return_value="/tmp/test"),
+    ):
+        mock_pygit2.clone_repository.return_value = mock_repo
+        mock_pygit2.GIT_OBJECT_TAG = 4
+        result = _fetch_file_pygit2("https://example.com/repo", "main", "MANIFEST.toml")
+
+    assert result == 'name = "Test"\n'
 
 
 def test_validate_manifest_valid():

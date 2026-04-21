@@ -1,10 +1,17 @@
 """MANIFEST.toml fetching and validation."""
 
+import shutil
 import subprocess
 import sys
 import tempfile
 
 import requests
+
+
+try:
+    import pygit2
+except ImportError:
+    pygit2 = None
 
 
 if sys.version_info >= (3, 11):
@@ -42,20 +49,24 @@ def raw_url(git_url, ref, path):
     return None
 
 
-def fetch_file_via_clone(git_url, ref, path):
-    """Fetch a file from a git repository via shallow clone.
+def _fetch_file_pygit2(git_url, ref, path):
+    """Fetch a file using pygit2 (no git CLI needed)."""
+    tmpdir = tempfile.mkdtemp()
+    try:
+        repo = pygit2.clone_repository(git_url, tmpdir, bare=True)
+        commit = repo.revparse_single(ref)
+        if commit.type == pygit2.GIT_OBJECT_TAG:
+            commit = commit.peel(pygit2.Commit)
+        entry = commit.peel(pygit2.Tree)[path]
+        return repo[entry.id].data.decode()
+    except (KeyError, pygit2.GitError) as e:
+        raise ValueError(f"Failed to fetch {path} from {git_url}: {e}") from e
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
-    Args:
-        git_url: Git repository URL
-        ref: Git ref (branch, tag, or commit)
-        path: File path within the repository
 
-    Returns:
-        str: File content
-
-    Raises:
-        ValueError: If the clone fails or the file is not found
-    """
+def _fetch_file_git_cli(git_url, ref, path):
+    """Fetch a file using git CLI with shallow sparse clone."""
     with tempfile.TemporaryDirectory() as tmpdir:
         try:
             subprocess.run(
@@ -82,12 +93,32 @@ def fetch_file_via_clone(git_url, ref, path):
             )
         except subprocess.CalledProcessError as e:
             raise ValueError(f"Failed to clone {git_url}: {e.stderr.decode().strip()}") from e
-        filepath = f"{tmpdir}/{path}"
         try:
-            with open(filepath) as f:
+            with open(f"{tmpdir}/{path}") as f:
                 return f.read()
         except FileNotFoundError as e:
             raise ValueError(f"File not found in repository: {path}") from e
+
+
+def fetch_file_via_clone(git_url, ref, path):
+    """Fetch a file from a git repository via clone.
+
+    Uses pygit2 if available, otherwise falls back to git CLI.
+
+    Args:
+        git_url: Git repository URL
+        ref: Git ref (branch, tag, or commit)
+        path: File path within the repository
+
+    Returns:
+        str: File content
+
+    Raises:
+        ValueError: If the clone fails or the file is not found
+    """
+    if pygit2 is not None:
+        return _fetch_file_pygit2(git_url, ref, path)
+    return _fetch_file_git_cli(git_url, ref, path)
 
 
 def fetch_manifest(git_url, ref="main"):
