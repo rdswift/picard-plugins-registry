@@ -87,7 +87,7 @@ def _find_git():
     """Find the git executable on the system."""
     git = shutil.which("git")
     if not git:
-        raise GitOperationError("git executable not found in PATH")
+        raise GitOperationError("git executable not found in PATH; install git or pygit2")
     return git
 
 
