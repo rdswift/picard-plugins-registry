@@ -3,11 +3,57 @@
 import argparse
 import sys
 
+from registry_lib import colors
 from registry_lib.blacklist import add_blacklist
+from registry_lib.manifest import (
+    fetch_manifest,
+    validate_manifest,
+)
 from registry_lib.picard.constants import REGISTRY_TRUST_LEVELS
 from registry_lib.plugin import DEFAULT_REF, add_plugin, update_plugin
 from registry_lib.registry import Registry
 from registry_lib.utils import now_iso8601
+
+
+def _format_trust(trust_level):
+    """Format trust level with color."""
+    if trust_level == "official":
+        return colors.green(trust_level)
+    elif trust_level == "trusted":
+        return colors.yellow(trust_level)
+    return trust_level
+
+
+def _print_plugin_details(plugin, indent=""):
+    """Print detailed plugin information."""
+    print(f"{indent}{colors.dim('ID:')} {colors.cyan(plugin['id'])}")
+    print(f"{indent}{colors.dim('Name:')} {colors.bold(plugin['name'])}")
+    print(f"{indent}{colors.dim('UUID:')} {plugin['uuid']}")
+    print(f"{indent}{colors.dim('Description:')} {plugin['description']}")
+    print(f"{indent}{colors.dim('URL:')} {colors.blue(plugin['git_url'])}")
+    print(f"{indent}{colors.dim('Trust Level:')} {_format_trust(plugin['trust_level'])}")
+    print(f"{indent}{colors.dim('Categories:')} {', '.join(plugin.get('categories', []))}")
+    print(f"{indent}{colors.dim('Authors:')} {', '.join(plugin.get('authors', []))}")
+    if 'maintainers' in plugin:
+        print(f"{indent}{colors.dim('Maintainers:')} {', '.join(plugin['maintainers'])}")
+    if 'report_bugs_to' in plugin:
+        print(f"{indent}{colors.dim('Report Bugs To:')} {colors.blue(plugin['report_bugs_to'])}")
+    if 'license' in plugin:
+        print(f"{indent}{colors.dim('License:')} {plugin['license']}")
+    if 'license_url' in plugin:
+        print(f"{indent}{colors.dim('License URL:')} {colors.blue(plugin['license_url'])}")
+    if 'homepage' in plugin:
+        print(f"{indent}{colors.dim('Homepage:')} {colors.blue(plugin['homepage'])}")
+    if 'long_description' in plugin:
+        print(f"{indent}{colors.dim('Long Description:')} ({len(plugin['long_description'])} chars)")
+    for lang, text in sorted(plugin.get('long_description_i18n', {}).items()):
+        print(f"{indent}{colors.dim(f'Long Description[{lang}]:')} ({len(text)} chars)")
+    if 'versioning_scheme' in plugin:
+        print(f"{indent}{colors.dim('Versioning Scheme:')} {plugin['versioning_scheme']}")
+    if 'redirect_from' in plugin:
+        print(f"{indent}{colors.dim('Redirects from:')} {', '.join(plugin['redirect_from'])}")
+    print(f"{indent}{colors.dim('Added:')} {plugin['added_at']}")
+    print(f"{indent}{colors.dim('Updated:')} {plugin['updated_at']}")
 
 
 def get_plugin_or_exit(registry, plugin_id):
@@ -49,11 +95,13 @@ def cmd_validate(args):
 
     if errors:
         for error in errors:
-            print(f"Error: {error}", file=sys.stderr)
+            print(colors.red(f"Error: {error}"), file=sys.stderr)
         sys.exit(1)
     else:
         print(
-            f"✓ Registry valid: {len(registry.data['plugins'])} plugins, {len(registry.data['blacklist'])} blacklist entries"
+            colors.green(
+                f"✓ Registry valid: {len(registry.data['plugins'])} plugins, {len(registry.data['blacklist'])} blacklist entries"
+            )
         )
 
 
@@ -74,14 +122,14 @@ def cmd_stats(args):
         for cat in plugin.get('categories', []):
             category_counts[cat] = category_counts.get(cat, 0) + 1
 
-    print(f"Total plugins: {len(plugins)}")
-    print(f"Blacklist entries: {len(registry.data['blacklist'])}")
+    print(f"Total plugins: {colors.bold(str(len(plugins)))}")
+    print(f"Blacklist entries: {colors.bold(str(len(registry.data['blacklist'])))}")
     print()
-    print("By trust level:")
+    print(colors.bold("By trust level:"))
     for trust, count in sorted(trust_counts.items()):
-        print(f"  {trust}: {count}")
+        print(f"  {_format_trust(trust)}: {count}")
     print()
-    print("By category:")
+    print(colors.bold("By category:"))
     for cat, count in sorted(category_counts.items()):
         print(f"  {cat}: {count}")
 
@@ -102,45 +150,34 @@ def cmd_output(args):
         plugins = registry.data['plugins']
         blacklist = registry.data['blacklist']
 
-        print(f"Registry: {len(plugins)} plugins, {len(blacklist)} blacklist entries\n")
+        print(
+            f"Registry: {colors.bold(str(len(plugins)))} plugins, {colors.bold(str(len(blacklist)))} blacklist entries\n"
+        )
         print("=" * 80)
 
         for plugin in plugins:
-            print(f"\n• {plugin['id']}")
-            print(f"  Name: {plugin.get('name', 'N/A')}")
-            print(f"  UUID: {plugin['uuid']}")
-            print(f"  URL: {plugin['git_url']}")
-            print(f"  Trust: {plugin.get('trust_level', 'unknown')}")
-            if plugin.get('description'):
-                print(f"  Description: {plugin['description']}")
-            if plugin.get('categories'):
-                print(f"  Categories: {', '.join(plugin['categories'])}")
-            if plugin.get('authors'):
-                print(f"  Authors: {', '.join(plugin['authors'])}")
-            if plugin.get('maintainers'):
-                print(f"  Maintainers: {', '.join(plugin['maintainers'])}")
-            if plugin.get('license'):
-                print(f"  License: {plugin['license']}")
-            if plugin.get('redirects'):
-                print(f"  Redirects: {', '.join(plugin['redirects'])}")
-            if plugin.get('refs'):
-                print(f"  Refs ({len(plugin['refs'])}):")
-                for ref in plugin['refs']:
-                    print(f"    - {ref['ref']}: {ref['commit']}")
+            print()
+            _print_plugin_details(plugin, indent="  ")
 
         if blacklist:
             print("\n" + "=" * 80)
-            print(f"\nBlacklist ({len(blacklist)} entries):\n")
+            print(f"\n{colors.bold(f'Blacklist ({len(blacklist)} entries):')}\n")
             for entry in blacklist:
-                print(f"• {entry.get('git_url', entry.get('uuid', 'Unknown'))}")
+                print(f"• {colors.red(entry.get('git_url', entry.get('uuid', 'Unknown')))}")
                 if entry.get('reason'):
-                    print(f"  Reason: {entry['reason']}")
+                    print(f"  {colors.dim('Reason:')} {entry['reason']}")
                 if entry.get('date'):
-                    print(f"  Date: {entry['date']}")
+                    print(f"  {colors.dim('Date:')} {entry['date']}")
                 print()
     else:
         print(f"Error: Unknown format '{args.format}'", file=sys.stderr)
         sys.exit(1)
+
+
+def cmd_display(args):
+    """Display registry in human-readable format."""
+    args.format = "human"
+    cmd_output(args)
 
 
 def cmd_plugin_redirect(args):
@@ -164,7 +201,7 @@ def cmd_plugin_redirect(args):
                 del plugin['redirect_from']
             plugin["updated_at"] = now_iso8601()
             registry.save()
-            print(f"Removed redirect: {args.old_url}")
+            print(colors.green(f"Removed redirect: {args.old_url}"))
         else:
             print(f"Error: Redirect {args.old_url} not found", file=sys.stderr)
             sys.exit(1)
@@ -179,7 +216,7 @@ def cmd_plugin_redirect(args):
 
         plugin["updated_at"] = now_iso8601()
         registry.save()
-        print(f"Added redirect: {args.old_url} -> {plugin['git_url']}")
+        print(colors.green(f"Added redirect: {args.old_url} -> {plugin['git_url']}"))
 
 
 def cmd_plugin_ref_add(args):
@@ -209,7 +246,7 @@ def cmd_plugin_ref_add(args):
     plugin['refs'].append(ref)
     plugin["updated_at"] = now_iso8601()
     registry.save()
-    print(f"Added ref: {args.ref_name}")
+    print(colors.green(f"Added ref: {args.ref_name}"))
 
 
 def cmd_plugin_ref_edit(args):
@@ -249,7 +286,7 @@ def cmd_plugin_ref_edit(args):
 
     plugin["updated_at"] = now_iso8601()
     registry.save()
-    print(f"Updated ref: {args.new_name if args.new_name else args.ref_name}")
+    print(colors.green(f"Updated ref: {args.new_name if args.new_name else args.ref_name}"))
 
 
 def cmd_plugin_ref_remove(args):
@@ -275,7 +312,7 @@ def cmd_plugin_ref_remove(args):
 
     plugin["updated_at"] = now_iso8601()
     registry.save()
-    print(f"Removed ref: {args.ref_name}")
+    print(colors.green(f"Removed ref: {args.ref_name}"))
 
 
 def cmd_plugin_ref_list(args):
@@ -324,7 +361,14 @@ def cmd_plugin_edit(args):
 
     plugin["updated_at"] = now_iso8601()
     registry.save()
-    print(f"Updated plugin: {plugin['name']} ({plugin['id']})")
+    print(colors.green(f"Updated plugin: {plugin['name']} ({plugin['id']})"))
+
+
+def cmd_plugin_validate_manifest(args):
+    """Validate a plugin's MANIFEST.toml without adding to registry."""
+    manifest = fetch_manifest(args.url, args.ref)
+    validate_manifest(manifest)
+    print(colors.green(f"✓ MANIFEST.toml valid: {manifest['name']} ({manifest['uuid']})"))
 
 
 def cmd_plugin_add(args):
@@ -335,7 +379,7 @@ def cmd_plugin_add(args):
         registry, args.url, args.trust, categories=categories, refs=args.refs, versioning_scheme=args.versioning_scheme
     )
     registry.save()
-    print(f"Added plugin: {plugin['name']} ({plugin['id']})")
+    print(colors.green(f"Added plugin: {plugin['name']} ({plugin['id']})"))
 
 
 def cmd_plugin_update(args):
@@ -343,7 +387,7 @@ def cmd_plugin_update(args):
     registry = Registry(args.registry)
     plugin = update_plugin(registry, args.plugin_id, ref=args.ref)
     registry.save()
-    print(f"Updated plugin: {plugin['name']} ({plugin['id']})")
+    print(colors.green(f"Updated plugin: {plugin['name']} ({plugin['id']})"))
 
 
 def cmd_plugin_remove(args):
@@ -351,7 +395,7 @@ def cmd_plugin_remove(args):
     registry = Registry(args.registry)
     registry.remove_plugin(args.plugin_id)
     registry.save()
-    print(f"Removed plugin: {args.plugin_id}")
+    print(colors.green(f"Removed plugin: {args.plugin_id}"))
 
 
 def cmd_plugin_list(args):
@@ -374,47 +418,16 @@ def cmd_plugin_list(args):
         if args.verbose:
             if i > 0:
                 print()  # Blank line between plugins
-            print(f"ID: {plugin['id']}")
-            print(f"Name: {plugin['name']}")
-            print(f"UUID: {plugin['uuid']}")
-            print(f"Description: {plugin['description']}")
-            print(f"URL: {plugin['git_url']}")
-            print(f"Trust Level: {plugin['trust_level']}")
-            print(f"Categories: {', '.join(plugin.get('categories', []))}")
-            print(f"Authors: {', '.join(plugin.get('authors', []))}")
-            if 'maintainers' in plugin:
-                print(f"Maintainers: {', '.join(plugin['maintainers'])}")
-            if 'versioning_scheme' in plugin:
-                print(f"Versioning Scheme: {plugin['versioning_scheme']}")
-            if 'redirect_from' in plugin:
-                print(f"Redirects from: {', '.join(plugin['redirect_from'])}")
-            print(f"Added: {plugin['added_at']}")
-            print(f"Updated: {plugin['updated_at']}")
+            _print_plugin_details(plugin)
         else:
-            print(f"{plugin['id']}: {plugin['name']} ({plugin['trust_level']})")
+            print(f"{colors.cyan(plugin['id'])}: {plugin['name']} ({_format_trust(plugin['trust_level'])})")
 
 
 def cmd_plugin_show(args):
     """Show plugin details."""
     registry = Registry(args.registry)
     plugin = get_plugin_or_exit(registry, args.plugin_id)
-
-    print(f"ID: {plugin['id']}")
-    print(f"Name: {plugin['name']}")
-    print(f"UUID: {plugin['uuid']}")
-    print(f"Description: {plugin['description']}")
-    print(f"URL: {plugin['git_url']}")
-    print(f"Trust Level: {plugin['trust_level']}")
-    print(f"Categories: {', '.join(plugin.get('categories', []))}")
-    print(f"Authors: {', '.join(plugin.get('authors', []))}")
-    if 'maintainers' in plugin:
-        print(f"Maintainers: {', '.join(plugin['maintainers'])}")
-    if 'versioning_scheme' in plugin:
-        print(f"Versioning Scheme: {plugin['versioning_scheme']}")
-    if 'redirect_from' in plugin:
-        print(f"Redirects from: {', '.join(plugin['redirect_from'])}")
-    print(f"Added: {plugin['added_at']}")
-    print(f"Updated: {plugin['updated_at']}")
+    _print_plugin_details(plugin)
 
 
 def cmd_blacklist_add(args):
@@ -423,7 +436,7 @@ def cmd_blacklist_add(args):
     add_blacklist(registry, url=args.url, uuid=args.uuid, url_regex=args.url_regex, reason=args.reason)
     registry.save()
     identifier = args.uuid or args.url or args.url_regex
-    print(f"Blacklisted: {identifier}")
+    print(colors.green(f"Blacklisted: {identifier}"))
 
 
 def cmd_blacklist_remove(args):
@@ -432,7 +445,7 @@ def cmd_blacklist_remove(args):
     registry.remove_blacklist(url=args.url, uuid=args.uuid)
     registry.save()
     identifier = args.uuid or args.url
-    print(f"Removed from blacklist: {identifier}")
+    print(colors.green(f"Removed from blacklist: {identifier}"))
 
 
 def cmd_blacklist_list(args):
@@ -443,7 +456,7 @@ def cmd_blacklist_list(args):
         if "uuid" in entry:
             identifiers.append(f"UUID:{entry['uuid']}")
         if "url" in entry:
-            identifiers.append(f"URL:{entry['url']}")
+            identifiers.append(f"URL:{colors.blue(entry['url'])}")
         if "url_regex" in entry:
             identifiers.append(f"REGEX:{entry['url_regex']}")
         identifier_str = ", ".join(identifiers)
@@ -468,13 +481,13 @@ def cmd_blacklist_show(args):
 
     # Display entry details
     if "uuid" in entry:
-        print(f"UUID: {entry['uuid']}")
+        print(f"{colors.dim('UUID:')} {entry['uuid']}")
     if "url" in entry:
-        print(f"URL: {entry['url']}")
+        print(f"{colors.dim('URL:')} {colors.blue(entry['url'])}")
     if "url_regex" in entry:
-        print(f"URL Regex: {entry['url_regex']}")
-    print(f"Reason: {entry['reason']}")
-    print(f"Blacklisted at: {entry['blacklisted_at']}")
+        print(f"{colors.dim('URL Regex:')} {entry['url_regex']}")
+    print(f"{colors.dim('Reason:')} {entry['reason']}")
+    print(f"{colors.dim('Blacklisted at:')} {entry['blacklisted_at']}")
 
 
 def main():
@@ -486,6 +499,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Picard plugins registry maintenance tool")
     parser.add_argument("--registry", default="plugins.toml", help="Path to registry file")
+    parser.add_argument("--no-color", action="store_true", help="Disable colored output")
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -557,6 +571,12 @@ def main():
     show_parser = plugin_subparsers.add_parser("show", help="Show plugin details")
     show_parser.add_argument("plugin_id", help="Plugin ID")
     show_parser.set_defaults(func=cmd_plugin_show)
+
+    # plugin validate-manifest
+    vm_parser = plugin_subparsers.add_parser("validate", help="Validate a plugin's MANIFEST.toml")
+    vm_parser.add_argument("url", help="Git repository URL")
+    vm_parser.add_argument("--ref", default="main", help="Git ref (default: main)")
+    vm_parser.set_defaults(func=cmd_plugin_validate_manifest)
 
     # Ref commands
     ref_parser = subparsers.add_parser("ref", help="Plugin ref operations")
@@ -631,11 +651,16 @@ def main():
     )
     output_parser.set_defaults(func=cmd_output)
 
+    # Display command (shortcut for output --format human)
+    display_parser = subparsers.add_parser("display", help="Display registry in human-readable format")
+    display_parser.set_defaults(func=cmd_display)
+
     args = parser.parse_args()
+    colors.init(no_color=args.no_color)
     try:
         args.func(args)
     except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
+        print(colors.red(f"Error: {e}"), file=sys.stderr)
         sys.exit(1)
 
 
