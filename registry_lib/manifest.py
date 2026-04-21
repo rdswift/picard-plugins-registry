@@ -1,6 +1,8 @@
 """MANIFEST.toml fetching and validation."""
 
+import subprocess
 import sys
+import tempfile
 
 import requests
 
@@ -31,21 +33,67 @@ def raw_url(git_url, ref, path):
         path: File path within the repository
 
     Returns:
-        str: Raw file URL
-
-    Raises:
-        ValueError: If the git host is not supported
+        str or None: Raw file URL, or None if the host is not in GIT_SOURCES
     """
     git_url = git_url.rstrip("/").removesuffix(".git")
     for host, build_url in GIT_SOURCES.items():
         if host in git_url:
             return build_url(git_url, ref, path)
-    supported = ", ".join(GIT_SOURCES)
-    raise ValueError(f"Unsupported git host: {git_url} (supported: {supported})")
+    return None
+
+
+def fetch_file_via_clone(git_url, ref, path):
+    """Fetch a file from a git repository via shallow clone.
+
+    Args:
+        git_url: Git repository URL
+        ref: Git ref (branch, tag, or commit)
+        path: File path within the repository
+
+    Returns:
+        str: File content
+
+    Raises:
+        ValueError: If the clone fails or the file is not found
+    """
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
+            subprocess.run(
+                [
+                    "git",
+                    "clone",
+                    "--depth",
+                    "1",
+                    "--branch",
+                    ref,
+                    "--filter=blob:none",
+                    "--sparse",
+                    git_url,
+                    tmpdir,
+                ],
+                capture_output=True,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "sparse-checkout", "set", path],
+                capture_output=True,
+                check=True,
+                cwd=tmpdir,
+            )
+        except subprocess.CalledProcessError as e:
+            raise ValueError(f"Failed to clone {git_url}: {e.stderr.decode().strip()}") from e
+        filepath = f"{tmpdir}/{path}"
+        try:
+            with open(filepath) as f:
+                return f.read()
+        except FileNotFoundError as e:
+            raise ValueError(f"File not found in repository: {path}") from e
 
 
 def fetch_manifest(git_url, ref="main"):
     """Fetch MANIFEST.toml from git repository.
+
+    Uses raw HTTP URL for known hosts, falls back to shallow clone.
 
     Args:
         git_url: Git repository URL
@@ -55,14 +103,18 @@ def fetch_manifest(git_url, ref="main"):
         dict: Parsed MANIFEST.toml content
 
     Raises:
-        ValueError: If the git host is not supported or manifest is invalid
-        requests.HTTPError: If manifest cannot be fetched
+        ValueError: If manifest cannot be fetched or is invalid
+        requests.HTTPError: If HTTP fetch fails for a known host
     """
-    manifest_url = raw_url(git_url, ref, "MANIFEST.toml")
-    response = requests.get(manifest_url, timeout=10)
-    response.raise_for_status()
+    url = raw_url(git_url, ref, "MANIFEST.toml")
+    if url:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        content = response.text
+    else:
+        content = fetch_file_via_clone(git_url, ref, "MANIFEST.toml")
 
-    return tomllib.loads(response.text)
+    return tomllib.loads(content)
 
 
 def validate_manifest(manifest):

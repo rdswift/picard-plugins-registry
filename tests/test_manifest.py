@@ -1,13 +1,16 @@
 """Tests for manifest module."""
 
+import subprocess
 from unittest.mock import (
     Mock,
+    mock_open,
     patch,
 )
 
 import pytest
 
 from registry_lib.manifest import (
+    fetch_file_via_clone,
     fetch_manifest,
     raw_url,
     validate_manifest,
@@ -85,10 +88,24 @@ api = ["3.0"]
     assert expected_manifest_url in call_url
 
 
-def test_fetch_manifest_unsupported():
-    """Test fetch manifest with unsupported URL."""
-    with pytest.raises(ValueError, match="Unsupported git host"):
-        fetch_manifest("https://unknown.example.com/user/plugin")
+def test_fetch_manifest_unsupported_falls_back_to_clone():
+    """Test fetch manifest falls back to clone for unknown hosts."""
+    manifest_toml = """\
+uuid = "6de6a3bf-a524-42b6-83cb-a36b2ec2e246"
+name = "Test Plugin"
+version = "1.0.0"
+description = "A test plugin"
+api = ["3.0"]
+"""
+    with patch("registry_lib.manifest.fetch_file_via_clone", return_value=manifest_toml) as mock_clone:
+        manifest = fetch_manifest("https://unknown.example.com/user/plugin", "main")
+
+    assert manifest["name"] == "Test Plugin"
+    mock_clone.assert_called_once_with(
+        "https://unknown.example.com/user/plugin",
+        "main",
+        "MANIFEST.toml",
+    )
 
 
 @pytest.mark.parametrize(
@@ -138,10 +155,32 @@ def test_raw_url_strips_git_suffix():
     assert "plugin/main/file.txt" in url
 
 
-def test_raw_url_unsupported():
-    """Test raw_url with unsupported host."""
-    with pytest.raises(ValueError, match="Unsupported git host"):
-        raw_url("https://unknown.example.com/user/plugin", "main", "file.txt")
+def test_raw_url_unknown_host():
+    """Test raw_url returns None for unknown hosts."""
+    assert raw_url("https://unknown.example.com/user/plugin", "main", "file.txt") is None
+
+
+@patch("registry_lib.manifest.subprocess.run")
+def test_fetch_file_via_clone_success(mock_run):
+    """Test successful file fetch via shallow clone."""
+    manifest_content = 'name = "Test"\n'
+    with patch("builtins.open", mock_open(read_data=manifest_content)):
+        result = fetch_file_via_clone("https://example.com/repo", "main", "MANIFEST.toml")
+
+    assert result == manifest_content
+    assert mock_run.call_count == 2
+
+
+@patch("registry_lib.manifest.subprocess.run")
+def test_fetch_file_via_clone_clone_fails(mock_run):
+    """Test clone failure raises ValueError."""
+    mock_run.side_effect = subprocess.CalledProcessError(
+        128,
+        "git",
+        stderr=b"fatal: repository not found",
+    )
+    with pytest.raises(ValueError, match="Failed to clone"):
+        fetch_file_via_clone("https://example.com/repo", "main", "MANIFEST.toml")
 
 
 def test_validate_manifest_valid():
