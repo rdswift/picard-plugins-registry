@@ -29,6 +29,15 @@ source .venv/bin/activate
 
 **Note:** After activating the virtual environment with `source .venv/bin/activate`, you can run `registry` commands directly. All examples below assume the virtual environment is activated. If not activated, prefix commands with `uv run` (e.g., `uv run registry plugin list`).
 
+### Git Requirements
+
+For fetching manifests from well-known hosts (GitHub, GitLab, Sourcehut, Codeberg, Bitbucket), no extra dependencies are needed — files are fetched via HTTP.
+
+For other git hosts, one of the following is required:
+
+- **pygit2** (recommended): `uv pip install pygit2` — pure Python, no external tools needed
+- **git CLI**: must be available in `PATH`
+
 ## Usage
 
 ### Add a Plugin
@@ -75,14 +84,21 @@ registry plugin update plugin-id --ref develop
 
 ### Validate Plugin Manifest
 
-Validate a plugin's MANIFEST.toml without adding it to the registry:
+Validate a plugin's MANIFEST.toml without adding it to the registry.
+Accepts a remote git URL or a local path (directory or file):
 
 ```bash
-# Validate from default ref (main)
+# Validate from a remote repository (default ref: main)
 registry plugin validate https://github.com/user/plugin-name
 
-# Validate from specific ref
+# Validate from a specific ref
 registry plugin validate https://github.com/user/plugin-name --ref develop
+
+# Validate from a local directory (reads MANIFEST.toml from it)
+registry plugin validate /path/to/plugin
+
+# Validate a local MANIFEST.toml file directly
+registry plugin validate /path/to/MANIFEST.toml
 ```
 
 ### Edit a Plugin
