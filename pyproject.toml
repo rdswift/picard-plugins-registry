@@ -15,6 +15,11 @@ dependencies = [
 [project.scripts]
 registry = "registry_lib.cli:main"
 
+[project.optional-dependencies]
+git = [
+    "pygit2>=1.18",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=8.1",
