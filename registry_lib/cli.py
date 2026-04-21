@@ -1,7 +1,14 @@
 """Command-line interface."""
 
 import argparse
+import os
 import sys
+
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 from registry_lib import colors
 from registry_lib.blacklist import add_blacklist
@@ -366,7 +373,16 @@ def cmd_plugin_edit(args):
 
 def cmd_plugin_validate_manifest(args):
     """Validate a plugin's MANIFEST.toml without adding to registry."""
-    manifest = fetch_manifest(args.url, args.ref)
+    source = args.source
+    if os.path.isdir(source):
+        manifest_path = os.path.join(source, "MANIFEST.toml")
+        with open(manifest_path, "rb") as f:
+            manifest = tomllib.load(f)
+    elif os.path.isfile(source):
+        with open(source, "rb") as f:
+            manifest = tomllib.load(f)
+    else:
+        manifest = fetch_manifest(source, args.ref)
     validate_manifest(manifest)
     print(colors.green(f"✓ MANIFEST.toml valid: {manifest['name']} ({manifest['uuid']})"))
 
@@ -572,9 +588,9 @@ def main():
     show_parser.add_argument("plugin_id", help="Plugin ID")
     show_parser.set_defaults(func=cmd_plugin_show)
 
-    # plugin validate-manifest
+    # plugin validate
     vm_parser = plugin_subparsers.add_parser("validate", help="Validate a plugin's MANIFEST.toml")
-    vm_parser.add_argument("url", help="Git repository URL")
+    vm_parser.add_argument("source", help="Git repository URL or local path")
     vm_parser.add_argument("--ref", default="main", help="Git ref (default: main)")
     vm_parser.set_defaults(func=cmd_plugin_validate_manifest)
 
