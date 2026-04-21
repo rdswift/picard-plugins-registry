@@ -366,7 +366,7 @@ def cmd_plugin_edit(args):
 
 def cmd_plugin_validate_manifest(args):
     """Validate a plugin's MANIFEST.toml without adding to registry."""
-    manifest = fetch_manifest(args.url, args.ref)
+    manifest = fetch_manifest(args.source, args.ref, allow_local=True)
     validate_manifest(manifest)
     print(colors.green(f"✓ MANIFEST.toml valid: {manifest['name']} ({manifest['uuid']})"))
 
@@ -572,9 +572,9 @@ def main():
     show_parser.add_argument("plugin_id", help="Plugin ID")
     show_parser.set_defaults(func=cmd_plugin_show)
 
-    # plugin validate-manifest
+    # plugin validate
     vm_parser = plugin_subparsers.add_parser("validate", help="Validate a plugin's MANIFEST.toml")
-    vm_parser.add_argument("url", help="Git repository URL")
+    vm_parser.add_argument("source", help="Git repository URL or local path")
     vm_parser.add_argument("--ref", default="main", help="Git ref (default: main)")
     vm_parser.set_defaults(func=cmd_plugin_validate_manifest)
 
