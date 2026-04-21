@@ -1,14 +1,7 @@
 """Command-line interface."""
 
 import argparse
-import os
 import sys
-
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
 
 from registry_lib import colors
 from registry_lib.blacklist import add_blacklist
@@ -373,16 +366,7 @@ def cmd_plugin_edit(args):
 
 def cmd_plugin_validate_manifest(args):
     """Validate a plugin's MANIFEST.toml without adding to registry."""
-    source = args.source
-    if os.path.isdir(source):
-        manifest_path = os.path.join(source, "MANIFEST.toml")
-        with open(manifest_path, "rb") as f:
-            manifest = tomllib.load(f)
-    elif os.path.isfile(source):
-        with open(source, "rb") as f:
-            manifest = tomllib.load(f)
-    else:
-        manifest = fetch_manifest(source, args.ref)
+    manifest = fetch_manifest(args.source, args.ref, allow_local=True)
     validate_manifest(manifest)
     print(colors.green(f"✓ MANIFEST.toml valid: {manifest['name']} ({manifest['uuid']})"))
 

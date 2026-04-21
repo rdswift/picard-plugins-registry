@@ -1,5 +1,6 @@
 """MANIFEST.toml fetching and validation."""
 
+import os
 import shutil
 import subprocess
 import sys
@@ -121,22 +122,42 @@ def fetch_file_via_clone(git_url, ref, path):
     return _fetch_file_git_cli(git_url, ref, path)
 
 
-def fetch_manifest(git_url, ref="main"):
-    """Fetch MANIFEST.toml from git repository.
+def _is_local_path(source):
+    """Check if source is a local path (file or directory)."""
+    return os.path.isfile(source) or os.path.isdir(source)
+
+
+def _fetch_local_manifest(source):
+    """Load MANIFEST.toml from a local path (file or directory)."""
+    path = os.path.join(source, "MANIFEST.toml") if os.path.isdir(source) else source
+    with open(path, "rb") as f:
+        return tomllib.load(f)
+
+
+def fetch_manifest(git_url, ref="main", *, allow_local=False):
+    """Fetch MANIFEST.toml from git repository or local path.
 
     Uses raw HTTP URL for known hosts, falls back to shallow clone.
+    Local paths are only accepted when allow_local=True.
 
     Args:
-        git_url: Git repository URL
+        git_url: Git repository URL or local path
         ref: Git ref (branch, tag, or commit)
+        allow_local: If True, accept local file/directory paths
 
     Returns:
         dict: Parsed MANIFEST.toml content
 
     Raises:
-        ValueError: If manifest cannot be fetched or is invalid
+        ValueError: If manifest cannot be fetched, source is local but
+            not allowed, or manifest is invalid
         requests.HTTPError: If HTTP fetch fails for a known host
     """
+    if _is_local_path(git_url):
+        if not allow_local:
+            raise ValueError(f"Local paths are not accepted: {git_url}")
+        return _fetch_local_manifest(git_url)
+
     url = raw_url(git_url, ref, "MANIFEST.toml")
     if url:
         response = requests.get(url, timeout=10)
