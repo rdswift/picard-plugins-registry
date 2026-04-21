@@ -327,7 +327,7 @@ uv run ruff check .
 uv run ruff format .
 
 # Type check
-ty check
+uv run ty check
 
 # Run pre-commit on all files
 uv run pre-commit run --all-files
