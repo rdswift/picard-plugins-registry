@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 
 import requests
 
@@ -50,16 +51,28 @@ def raw_url(git_url, ref, path):
     return None
 
 
+CLONE_TIMEOUT = 30
+
+
 def _fetch_file_pygit2(git_url, ref, path):
     """Fetch a file using pygit2 (no git CLI needed)."""
     tmpdir = tempfile.mkdtemp()
     try:
-        repo = pygit2.clone_repository(git_url, tmpdir, bare=True)
+        deadline = time.monotonic() + CLONE_TIMEOUT
+
+        def _check_timeout(stats):
+            if time.monotonic() > deadline:
+                raise TimeoutError(f"Clone timed out after {CLONE_TIMEOUT}s")
+
+        callbacks = pygit2.RemoteCallbacks(transfer_progress=_check_timeout)
+        repo = pygit2.clone_repository(git_url, tmpdir, bare=True, callbacks=callbacks)
         commit = repo.revparse_single(ref)
         if commit.type == pygit2.GIT_OBJECT_TAG:
             commit = commit.peel(pygit2.Commit)
         entry = commit.peel(pygit2.Tree)[path]
         return repo[entry.id].data.decode()
+    except TimeoutError as e:
+        raise ValueError(str(e)) from e
     except (KeyError, pygit2.GitError) as e:
         raise ValueError(f"Failed to fetch {path} from {git_url}: {e}") from e
     finally:
@@ -94,13 +107,17 @@ def _fetch_file_git_cli(git_url, ref, path):
                 ],
                 capture_output=True,
                 check=True,
+                timeout=CLONE_TIMEOUT,
             )
             subprocess.run(
                 [git, "sparse-checkout", "set", path],
                 capture_output=True,
                 check=True,
                 cwd=tmpdir,
+                timeout=CLONE_TIMEOUT,
             )
+        except subprocess.TimeoutExpired as e:
+            raise ValueError(f"Clone timed out after {CLONE_TIMEOUT}s") from e
         except subprocess.CalledProcessError as e:
             raise ValueError(f"Failed to clone {git_url}: {e.stderr.decode().strip()}") from e
         try:
