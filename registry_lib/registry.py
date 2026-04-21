@@ -12,7 +12,7 @@ else:
 try:
     import tomli_w
 except ImportError:
-    tomli_w = None
+    tomli_w = None  # type: ignore[assignment]
 
 
 class Registry:

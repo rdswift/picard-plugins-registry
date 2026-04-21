@@ -494,8 +494,8 @@ def main():
     """Main CLI entry point."""
     # Ensure utf-8 is used for IO encoding on all platforms. Specifically on Windows
     # this fixes encoding issues during console output in certain cases.
-    sys.stdout.reconfigure(encoding="utf-8")
-    sys.stderr.reconfigure(encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[unresolved-attribute]
+    sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[unresolved-attribute]
 
     parser = argparse.ArgumentParser(description="Picard plugins registry maintenance tool")
     parser.add_argument("--registry", default="plugins.toml", help="Path to registry file")

@@ -60,6 +60,7 @@ CLONE_TIMEOUT = 30
 
 def _fetch_file_pygit2(git_url, ref, path):
     """Fetch a file using pygit2 (no git CLI needed)."""
+    assert pygit2 is not None
     with tempfile.TemporaryDirectory() as tmpdir:
         try:
             deadline = time.monotonic() + CLONE_TIMEOUT
