@@ -1,10 +1,17 @@
 """Tests for manifest module."""
 
-from unittest.mock import Mock, patch
+from unittest.mock import (
+    Mock,
+    patch,
+)
 
 import pytest
 
-from registry_lib.manifest import fetch_manifest, validate_manifest
+from registry_lib.manifest import (
+    fetch_manifest,
+    raw_url,
+    validate_manifest,
+)
 
 
 @patch("registry_lib.manifest.requests.get")
@@ -78,8 +85,49 @@ api = ["3.0"]
 
 def test_fetch_manifest_unsupported():
     """Test fetch manifest with unsupported URL."""
-    with pytest.raises(ValueError, match="Only GitHub, GitLab and Sourcehut URLs are supported"):
+    with pytest.raises(ValueError, match="Unsupported git host"):
         fetch_manifest("https://bitbucket.org/user/plugin")
+
+
+@pytest.mark.parametrize(
+    "repo_url, ref, path, expected",
+    [
+        (
+            "https://github.com/user/plugin",
+            "main",
+            "MANIFEST.toml",
+            "https://raw.githubusercontent.com/user/plugin/main/MANIFEST.toml",
+        ),
+        (
+            "https://gitlab.com/user/plugin",
+            "v2",
+            "MANIFEST.toml",
+            "https://gitlab.com/user/plugin/-/raw/v2/MANIFEST.toml",
+        ),
+        (
+            "https://git.sr.ht/~user/plugin",
+            "main",
+            "some/path.txt",
+            "https://git.sr.ht/~user/plugin/blob/main/some/path.txt",
+        ),
+    ],
+)
+def test_raw_url(repo_url, ref, path, expected):
+    """Test raw_url builds correct URLs for each host."""
+    assert raw_url(repo_url, ref, path) == expected
+
+
+def test_raw_url_strips_git_suffix():
+    """Test raw_url strips .git suffix."""
+    url = raw_url("https://github.com/user/plugin.git", "main", "file.txt")
+    assert "plugin.git" not in url
+    assert "plugin/main/file.txt" in url
+
+
+def test_raw_url_unsupported():
+    """Test raw_url with unsupported host."""
+    with pytest.raises(ValueError, match="Unsupported git host"):
+        raw_url("https://bitbucket.org/user/plugin", "main", "file.txt")
 
 
 def test_validate_manifest_valid():
