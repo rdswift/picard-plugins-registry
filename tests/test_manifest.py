@@ -10,6 +10,7 @@ from unittest.mock import (
 import pytest
 
 from registry_lib.manifest import (
+    GitOperationError,
     _fetch_file_git_cli,
     _fetch_file_pygit2,
     fetch_file_via_clone,
@@ -181,7 +182,7 @@ def test_fetch_file_via_clone_clone_fails(mock_run):
         "git",
         stderr=b"fatal: repository not found",
     )
-    with pytest.raises(ValueError, match="Failed to clone"):
+    with pytest.raises(GitOperationError, match="Failed to clone"):
         _fetch_file_git_cli("https://example.com/repo", "main", "MANIFEST.toml")
 
 

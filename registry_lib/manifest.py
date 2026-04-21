@@ -24,6 +24,10 @@ else:
 from registry_lib.picard.validator import validate_manifest_dict
 
 
+class GitOperationError(Exception):
+    """Raised when a git operation (clone, fetch) fails."""
+
+
 GIT_SOURCES = {
     "github.com": lambda url, ref, path: (url.replace("github.com", "raw.githubusercontent.com") + f"/{ref}/{path}"),
     "gitlab.com": lambda url, ref, path: f"{url}/-/raw/{ref}/{path}",
@@ -72,9 +76,9 @@ def _fetch_file_pygit2(git_url, ref, path):
         entry = commit.peel(pygit2.Tree)[path]
         return repo[entry.id].data.decode()
     except TimeoutError as e:
-        raise ValueError(str(e)) from e
+        raise GitOperationError(str(e)) from e
     except (KeyError, pygit2.GitError) as e:
-        raise ValueError(f"Failed to fetch {path} from {git_url}: {e}") from e
+        raise GitOperationError(f"Failed to fetch {path} from {git_url}: {e}") from e
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
 
@@ -83,7 +87,7 @@ def _find_git():
     """Find the git executable on the system."""
     git = shutil.which("git")
     if not git:
-        raise ValueError("git executable not found in PATH")
+        raise GitOperationError("git executable not found in PATH")
     return git
 
 
@@ -117,14 +121,14 @@ def _fetch_file_git_cli(git_url, ref, path):
                 timeout=CLONE_TIMEOUT,
             )
         except subprocess.TimeoutExpired as e:
-            raise ValueError(f"Clone timed out after {CLONE_TIMEOUT}s") from e
+            raise GitOperationError(f"Clone timed out after {CLONE_TIMEOUT}s") from e
         except subprocess.CalledProcessError as e:
-            raise ValueError(f"Failed to clone {git_url}: {e.stderr.decode().strip()}") from e
+            raise GitOperationError(f"Failed to clone {git_url}: {e.stderr.decode().strip()}") from e
         try:
             with open(f"{tmpdir}/{path}") as f:
                 return f.read()
         except FileNotFoundError as e:
-            raise ValueError(f"File not found in repository: {path}") from e
+            raise GitOperationError(f"File not found in repository: {path}") from e
 
 
 def fetch_file_via_clone(git_url, ref, path):
