@@ -60,27 +60,25 @@ CLONE_TIMEOUT = 30
 
 def _fetch_file_pygit2(git_url, ref, path):
     """Fetch a file using pygit2 (no git CLI needed)."""
-    tmpdir = tempfile.mkdtemp()
-    try:
-        deadline = time.monotonic() + CLONE_TIMEOUT
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
+            deadline = time.monotonic() + CLONE_TIMEOUT
 
-        def _check_timeout(stats):
-            if time.monotonic() > deadline:
-                raise TimeoutError(f"Clone timed out after {CLONE_TIMEOUT}s")
+            def _check_timeout(stats):
+                if time.monotonic() > deadline:
+                    raise TimeoutError(f"Clone timed out after {CLONE_TIMEOUT}s")
 
-        callbacks = pygit2.RemoteCallbacks(transfer_progress=_check_timeout)
-        repo = pygit2.clone_repository(git_url, tmpdir, bare=True, callbacks=callbacks)
-        commit = repo.revparse_single(ref)
-        if commit.type == pygit2.GIT_OBJECT_TAG:
-            commit = commit.peel(pygit2.Commit)
-        entry = commit.peel(pygit2.Tree)[path]
-        return repo[entry.id].data.decode()
-    except TimeoutError as e:
-        raise GitOperationError(str(e)) from e
-    except (KeyError, pygit2.GitError) as e:
-        raise GitOperationError(f"Failed to fetch {path} from {git_url}: {e}") from e
-    finally:
-        shutil.rmtree(tmpdir, ignore_errors=True)
+            callbacks = pygit2.RemoteCallbacks(transfer_progress=_check_timeout)
+            repo = pygit2.clone_repository(git_url, tmpdir, bare=True, callbacks=callbacks)
+            commit = repo.revparse_single(ref)
+            if commit.type == pygit2.GIT_OBJECT_TAG:
+                commit = commit.peel(pygit2.Commit)
+            entry = commit.peel(pygit2.Tree)[path]
+            return repo[entry.id].data.decode()
+        except TimeoutError as e:
+            raise GitOperationError(str(e)) from e
+        except (KeyError, pygit2.GitError) as e:
+            raise GitOperationError(f"Failed to fetch {path} from {git_url}: {e}") from e
 
 
 def _find_git():

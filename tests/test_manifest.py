@@ -206,8 +206,7 @@ def test_fetch_file_via_clone_falls_back_to_git_cli():
     mock_cli.assert_called_once()
 
 
-@patch("registry_lib.manifest.shutil.rmtree")
-def test_fetch_file_pygit2_success(mock_rmtree):
+def test_fetch_file_pygit2_success():
     """Test successful file fetch via pygit2."""
     mock_blob = Mock()
     mock_blob.data = b'name = "Test"\n'
@@ -221,8 +220,10 @@ def test_fetch_file_pygit2_success(mock_rmtree):
 
     with (
         patch("registry_lib.manifest.pygit2") as mock_pygit2,
-        patch("registry_lib.manifest.tempfile.mkdtemp", return_value="/tmp/test"),
+        patch("registry_lib.manifest.tempfile.TemporaryDirectory") as mock_tmpdir,
     ):
+        mock_tmpdir.return_value.__enter__ = Mock(return_value="/tmp/test")
+        mock_tmpdir.return_value.__exit__ = Mock(return_value=False)
         mock_pygit2.clone_repository.return_value = mock_repo
         mock_pygit2.GIT_OBJECT_TAG = 4
         result = _fetch_file_pygit2("https://example.com/repo", "main", "MANIFEST.toml")
