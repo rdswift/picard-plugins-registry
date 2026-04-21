@@ -66,13 +66,22 @@ def _fetch_file_pygit2(git_url, ref, path):
         shutil.rmtree(tmpdir, ignore_errors=True)
 
 
+def _find_git():
+    """Find the git executable on the system."""
+    git = shutil.which("git")
+    if not git:
+        raise ValueError("git executable not found in PATH")
+    return git
+
+
 def _fetch_file_git_cli(git_url, ref, path):
     """Fetch a file using git CLI with shallow sparse clone."""
+    git = _find_git()
     with tempfile.TemporaryDirectory() as tmpdir:
         try:
             subprocess.run(
                 [
-                    "git",
+                    git,
                     "clone",
                     "--depth",
                     "1",
@@ -87,7 +96,7 @@ def _fetch_file_git_cli(git_url, ref, path):
                 check=True,
             )
             subprocess.run(
-                ["git", "sparse-checkout", "set", path],
+                [git, "sparse-checkout", "set", path],
                 capture_output=True,
                 check=True,
                 cwd=tmpdir,
