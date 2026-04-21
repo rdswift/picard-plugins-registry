@@ -8,11 +8,13 @@ For registry development and maintenance, see [README.md](README.md).
 
 ## Prerequisites
 
+> **Note:** This registry is for Picard v3 plugins only. Legacy v2 plugins are managed through the [old plugin repository](https://github.com/metabrainz/picard-plugins).
+
 Your plugin must:
 
 - Be a **git repository** hosted on a public platform (GitHub, GitLab, Codeberg, Bitbucket, Sourcehut, or any git host)
 - Have a valid **`MANIFEST.toml`** in the repository root (see the [specification](https://github.com/metabrainz/picard/blob/main/docs/PLUGINSV3/MANIFEST.md))
-- Follow the [Picard plugin guidelines](https://picard-docs.musicbrainz.org/)
+- Follow the [Picard plugin guidelines](https://github.com/metabrainz/picard/tree/master/docs/PLUGINSV3)
 
 ---
 
