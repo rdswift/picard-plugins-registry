@@ -326,6 +326,9 @@ uv run ruff check .
 # Format code
 uv run ruff format .
 
+# Type check
+ty check
+
 # Run pre-commit on all files
 uv run pre-commit run --all-files
 ```
@@ -351,7 +354,7 @@ uv run pre-commit run --all-files
 4. Run `uv run pytest` to verify
 5. Submit a pull request
 
-All commits must pass pre-commit hooks (ruff format, ruff check, pytest).
+All commits must pass pre-commit hooks (ruff format, ruff check, ty check, pytest).
 
 ## Submitting Your Plugin
 
