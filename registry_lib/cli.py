@@ -1,8 +1,11 @@
 """Command-line interface."""
 
 import argparse
+import json
 import sys
 from typing import Any
+
+import tomli_w
 
 from registry_lib import colors
 from registry_lib.blacklist import add_blacklist
@@ -11,7 +14,11 @@ from registry_lib.manifest import (
     validate_manifest,
 )
 from registry_lib.picard.constants import REGISTRY_TRUST_LEVELS
-from registry_lib.plugin import DEFAULT_REF, add_plugin, update_plugin
+from registry_lib.plugin import (
+    DEFAULT_REF,
+    add_plugin,
+    update_plugin,
+)
 from registry_lib.registry import Registry
 from registry_lib.utils import now_iso8601
 
@@ -137,10 +144,6 @@ def cmd_stats(args: argparse.Namespace) -> None:
 
 def cmd_output(args: argparse.Namespace) -> None:
     """Output registry in specified format."""
-    import json
-
-    import tomli_w
-
     registry = Registry(args.registry)
 
     if args.format == "json":

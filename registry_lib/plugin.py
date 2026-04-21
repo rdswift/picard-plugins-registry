@@ -3,10 +3,16 @@
 from typing import Any
 import warnings
 
-from registry_lib.manifest import fetch_manifest, validate_manifest
+from registry_lib.manifest import (
+    fetch_manifest,
+    validate_manifest,
+)
 from registry_lib.picard.constants import REGISTRY_TRUST_LEVELS
 from registry_lib.registry import Registry
-from registry_lib.utils import derive_plugin_id, now_iso8601
+from registry_lib.utils import (
+    derive_plugin_id,
+    now_iso8601,
+)
 
 
 DEFAULT_REF = "main"
