@@ -1,6 +1,10 @@
 # Picard Plugins Registry
 
-Official registry and maintenance tools for MusicBrainz Picard plugins.
+Official registry and maintenance tools for MusicBrainz Picard plugins (v3).
+
+> **Plugin developers:** Want to submit your plugin? See the **[Plugin Submission Guide](PLUGIN_SUBMISSION.md)**.
+>
+> **Note:** This registry is for Picard v3 plugins only. Legacy v2 plugins are managed through the [old plugin repository](https://github.com/metabrainz/picard-plugins).
 
 ## Overview
 
@@ -345,6 +349,8 @@ uv run pre-commit run --all-files
 
 ## Contributing
 
+For **registry development** (code changes, bug fixes):
+
 1. Fork the repository
 2. Create a feature branch
 3. Make changes with tests
@@ -353,69 +359,7 @@ uv run pre-commit run --all-files
 
 All commits must pass pre-commit hooks (ruff format, ruff check, pytest).
 
-## Submitting Your Plugin
-
-Plugin developers can submit their plugins to the registry by creating a pull request:
-
-### Prerequisites
-
-- Your plugin must have a valid `MANIFEST.toml` file in the repository root
-- The plugin must be hosted on GitHub (other platforms may be supported in the future)
-- Your plugin should follow the [Picard plugin guidelines](https://picard-docs.musicbrainz.org/)
-
-### Submission Process
-
-1. **Fork this repository on GitHub:**
-   - Go to https://github.com/metabrainz/picard-plugins-registry
-   - Click "Fork" button
-
-2. **Clone your fork:**
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/picard-plugins-registry.git
-   cd picard-plugins-registry
-   ```
-
-3. **Set up the environment:**
-   ```bash
-   uv sync
-   source .venv/bin/activate
-   ```
-
-4. **Add your plugin:**
-   ```bash
-   registry plugin add https://github.com/YOUR-USERNAME/your-plugin \
-       --trust community \
-       --categories metadata
-   ```
-
-   Available categories: `metadata`, `coverart`, `ui`, `scripting`, `formats`, `other`
-
-5. **Validate the registry:**
-   ```bash
-   registry validate
-   ```
-
-6. **Commit and push:**
-   ```bash
-   git add plugins.toml
-   git commit -m "Add plugin: Your Plugin Name"
-   git push origin main
-   ```
-
-7. **Create a pull request:**
-   - Go to https://github.com/metabrainz/picard-plugins-registry
-   - Click "New Pull Request"
-   - Select your fork and branch
-   - Describe your plugin in the PR description
-
-7. **Wait for review:**
-   - The Picard team will review your submission
-   - CI will automatically validate the registry
-   - Once approved, your plugin will be available to all Picard users
-
-### Trust Levels
-
-New plugins are added with `community` trust level. After establishing a good track record, plugins may be promoted to `trusted` or `official` status by the Picard team.
+For **plugin developers** (submitting, updating, or moving a plugin), see [PLUGIN_SUBMISSION.md](PLUGIN_SUBMISSION.md).
 
 ## License
 
