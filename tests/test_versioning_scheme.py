@@ -95,4 +95,5 @@ def test_versioning_scheme_persists_in_registry(mock_fetch, temp_registry, tmp_p
     # Load registry and verify
     registry2 = Registry(str(tmp_path / "plugins.toml"))
     plugin = registry2.find_plugin("plugin")
+    assert plugin is not None
     assert plugin["versioning_scheme"] == "semver"

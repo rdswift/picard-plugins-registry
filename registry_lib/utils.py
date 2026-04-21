@@ -1,10 +1,13 @@
 """Utility functions for registry management."""
 
-from datetime import datetime, timezone
+from datetime import (
+    datetime,
+    timezone,
+)
 import re
 
 
-def derive_plugin_id(git_url):
+def derive_plugin_id(git_url: str) -> str:
     """Derive plugin ID from git URL.
 
     Args:
@@ -44,7 +47,7 @@ def derive_plugin_id(git_url):
     return plugin_id
 
 
-def now_iso8601():
+def now_iso8601() -> str:
     """Get current time in ISO 8601 format with Z suffix (no microseconds).
 
     Returns:

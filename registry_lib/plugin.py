@@ -1,10 +1,18 @@
 """Plugin operations."""
 
+from typing import Any
 import warnings
 
-from registry_lib.manifest import fetch_manifest, validate_manifest
+from registry_lib.manifest import (
+    fetch_manifest,
+    validate_manifest,
+)
 from registry_lib.picard.constants import REGISTRY_TRUST_LEVELS
-from registry_lib.utils import derive_plugin_id, now_iso8601
+from registry_lib.registry import Registry
+from registry_lib.utils import (
+    derive_plugin_id,
+    now_iso8601,
+)
 
 
 DEFAULT_REF = "main"
@@ -22,7 +30,7 @@ _OPTIONAL_MANIFEST_FIELDS = (
 )
 
 
-def _strip_field(value, field_name, plugin_id):
+def _strip_field(value: Any, field_name: str, plugin_id: str) -> Any:
     """Strip whitespace from a string value, warning if it differs."""
     if isinstance(value, str):
         stripped = value.strip()
@@ -35,7 +43,7 @@ def _strip_field(value, field_name, plugin_id):
     return value
 
 
-def _sync_optional_fields(plugin, manifest, fields):
+def _sync_optional_fields(plugin: dict[str, Any], manifest: dict[str, Any], fields: tuple[str, ...]) -> None:
     """Sync optional fields from manifest to plugin.
 
     Args:
@@ -51,7 +59,14 @@ def _sync_optional_fields(plugin, manifest, fields):
             del plugin[field]
 
 
-def add_plugin(registry, git_url, trust_level, categories=None, refs=None, versioning_scheme=None):
+def add_plugin(
+    registry: Registry,
+    git_url: str,
+    trust_level: str,
+    categories: list[str] | None = None,
+    refs: str | None = None,
+    versioning_scheme: str | None = None,
+) -> dict[str, Any]:
     """Add plugin to registry.
 
     Args:
@@ -126,7 +141,7 @@ def add_plugin(registry, git_url, trust_level, categories=None, refs=None, versi
     return plugin
 
 
-def _parse_refs(refs_str):
+def _parse_refs(refs_str: str) -> list[dict[str, str]]:
     """Parse refs string.
 
     Formats:
@@ -162,7 +177,7 @@ def _parse_refs(refs_str):
     return refs
 
 
-def update_plugin(registry, plugin_id, ref=None):
+def update_plugin(registry: Registry, plugin_id: str, ref: str | None = None) -> dict[str, Any]:
     """Update plugin metadata from MANIFEST.
 
     Args:

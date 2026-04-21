@@ -12,13 +12,16 @@ else:
 try:
     import tomli_w
 except ImportError:
-    tomli_w = None
+    tomli_w = None  # ty: ignore[invalid-assignment]
+
+
+from typing import Any
 
 
 class Registry:
     """Manages the plugins.toml registry file."""
 
-    def __init__(self, path="plugins.toml"):
+    def __init__(self, path: str = "plugins.toml") -> None:
         """Initialize registry.
 
         Args:
@@ -27,7 +30,7 @@ class Registry:
         self.path = Path(path)
         self.data = self._load()
 
-    def _load(self):
+    def _load(self) -> dict[str, Any]:
         """Load registry from file or create new."""
         if not self.path.exists():
             return {
@@ -45,7 +48,7 @@ class Registry:
         except tomllib.TOMLDecodeError as e:
             raise ValueError(f"Invalid TOML in {self.path}: {e}") from e
 
-    def save(self):
+    def save(self) -> None:
         """Save registry to file."""
         if not tomli_w:
             raise RuntimeError("tomli-w is required to save registry")
@@ -62,7 +65,7 @@ class Registry:
         with open(self.path, "wb") as f:
             tomli_w.dump(save_data, f, multiline_strings=True, indent=2)
 
-    def find_plugin(self, plugin_id):
+    def find_plugin(self, plugin_id: str) -> dict[str, Any] | None:
         """Find plugin by ID.
 
         Args:
@@ -76,7 +79,7 @@ class Registry:
                 return plugin
         return None
 
-    def add_plugin(self, plugin):
+    def add_plugin(self, plugin: dict[str, Any]) -> None:
         """Add plugin to registry.
 
         Args:
@@ -84,7 +87,7 @@ class Registry:
         """
         self.data["plugins"].append(plugin)
 
-    def remove_plugin(self, plugin_id):
+    def remove_plugin(self, plugin_id: str) -> None:
         """Remove plugin from registry.
 
         Args:
@@ -92,7 +95,7 @@ class Registry:
         """
         self.data["plugins"] = [p for p in self.data["plugins"] if p["id"] != plugin_id]
 
-    def add_blacklist(self, entry):
+    def add_blacklist(self, entry: dict[str, str]) -> None:
         """Add blacklist entry.
 
         Args:
@@ -100,7 +103,7 @@ class Registry:
         """
         self.data["blacklist"].append(entry)
 
-    def remove_blacklist(self, url=None, uuid=None):
+    def remove_blacklist(self, url: str | None = None, uuid: str | None = None) -> None:
         """Remove blacklist entry.
 
         Args:

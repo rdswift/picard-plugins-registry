@@ -330,6 +330,9 @@ uv run ruff check .
 # Format code
 uv run ruff format .
 
+# Type check
+uv run ty check
+
 # Run pre-commit on all files
 uv run pre-commit run --all-files
 ```
@@ -357,7 +360,7 @@ For **registry development** (code changes, bug fixes):
 4. Run `uv run pytest` to verify
 5. Submit a pull request
 
-All commits must pass pre-commit hooks (ruff format, ruff check, pytest).
+All commits must pass pre-commit hooks (ruff format, ruff check, ty check, pytest).
 
 For **plugin developers** (submitting, updating, or moving a plugin), see [PLUGIN_SUBMISSION.md](PLUGIN_SUBMISSION.md).
 

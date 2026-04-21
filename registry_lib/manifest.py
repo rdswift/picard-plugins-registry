@@ -21,6 +21,8 @@ if sys.version_info >= (3, 11):
 else:
     import tomli as tomllib
 
+from typing import Any
+
 from registry_lib.picard.validator import validate_manifest_dict
 
 
@@ -37,7 +39,7 @@ GIT_SOURCES = {
 }
 
 
-def raw_url(git_url, ref, path):
+def raw_url(git_url: str, ref: str, path: str) -> str | None:
     """Build a raw file URL for a git hosting service.
 
     Args:
@@ -58,13 +60,14 @@ def raw_url(git_url, ref, path):
 CLONE_TIMEOUT = 30
 
 
-def _fetch_file_pygit2(git_url, ref, path):
+def _fetch_file_pygit2(git_url: str, ref: str, path: str) -> str:
     """Fetch a file using pygit2 (no git CLI needed)."""
+    assert pygit2 is not None
     with tempfile.TemporaryDirectory() as tmpdir:
         try:
             deadline = time.monotonic() + CLONE_TIMEOUT
 
-            def _check_timeout(stats):
+            def _check_timeout(stats: Any) -> None:
                 if time.monotonic() > deadline:
                     raise TimeoutError(f"Clone timed out after {CLONE_TIMEOUT}s")
 
@@ -81,7 +84,7 @@ def _fetch_file_pygit2(git_url, ref, path):
             raise GitOperationError(f"Failed to fetch {path} from {git_url}: {e}") from e
 
 
-def _find_git():
+def _find_git() -> str:
     """Find the git executable on the system."""
     git = shutil.which("git")
     if not git:
@@ -89,7 +92,7 @@ def _find_git():
     return git
 
 
-def _fetch_file_git_cli(git_url, ref, path):
+def _fetch_file_git_cli(git_url: str, ref: str, path: str) -> str:
     """Fetch a file using git CLI with shallow sparse clone."""
     git = _find_git()
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -129,7 +132,7 @@ def _fetch_file_git_cli(git_url, ref, path):
             raise GitOperationError(f"File not found in repository: {path}") from e
 
 
-def fetch_file_via_clone(git_url, ref, path):
+def fetch_file_via_clone(git_url: str, ref: str, path: str) -> str:
     """Fetch a file from a git repository via clone.
 
     Uses pygit2 if available, otherwise falls back to git CLI.
@@ -150,19 +153,19 @@ def fetch_file_via_clone(git_url, ref, path):
     return _fetch_file_git_cli(git_url, ref, path)
 
 
-def _is_local_path(source):
+def _is_local_path(source: str) -> bool:
     """Check if source is a local path (file or directory)."""
     return os.path.isfile(source) or os.path.isdir(source)
 
 
-def _fetch_local_manifest(source):
+def _fetch_local_manifest(source: str) -> dict[str, Any]:
     """Load MANIFEST.toml from a local path (file or directory)."""
     path = os.path.join(source, "MANIFEST.toml") if os.path.isdir(source) else source
     with open(path, "rb") as f:
         return tomllib.load(f)
 
 
-def fetch_manifest(git_url, ref="main", *, allow_local=False):
+def fetch_manifest(git_url: str, ref: str = "main", *, allow_local: bool = False) -> dict[str, Any]:
     """Fetch MANIFEST.toml from git repository or local path.
 
     Uses raw HTTP URL for known hosts, falls back to shallow clone.
@@ -197,7 +200,7 @@ def fetch_manifest(git_url, ref="main", *, allow_local=False):
     return tomllib.loads(content)
 
 
-def validate_manifest(manifest):
+def validate_manifest(manifest: dict[str, Any]) -> None:
     """Validate MANIFEST.toml structure.
 
     Args:
