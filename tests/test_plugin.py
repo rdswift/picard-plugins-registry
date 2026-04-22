@@ -268,6 +268,26 @@ def test_update_plugin(mock_fetch, temp_registry):
     assert plugin["name"] == "Test Plugin Updated"
     assert plugin["description"] == "New description"
     assert plugin["authors"] == ["New Author"]
+    mock_fetch.assert_called_with("https://github.com/user/test-plugin", "main")
+
+
+@patch("registry_lib.plugin.fetch_manifest")
+def test_update_plugin_custom_ref(mock_fetch, temp_registry):
+    """Test updating plugin metadata."""
+    # Add plugin first
+    mock_fetch.return_value = {
+        "uuid": "6de6a3bf-a524-42b6-83cb-a36b2ec2e246",
+        "name": "Test Plugin",
+        "version": "1.0.0",
+        "description": "Old description",
+        "api": ["3.0"],
+        "authors": ["Old Author"],
+    }
+    add_plugin(temp_registry, "https://github.com/user/test-plugin", "community", refs="v1:3.0,master")
+
+    update_plugin(temp_registry, "test-plugin")
+
+    mock_fetch.assert_called_with("https://github.com/user/test-plugin", "v1")
 
 
 @patch("registry_lib.plugin.fetch_manifest")

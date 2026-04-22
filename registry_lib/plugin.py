@@ -195,10 +195,12 @@ def update_plugin(registry: Registry, plugin_id: str, ref: str | None = None) ->
     if not plugin:
         raise ValueError(f"Plugin {plugin_id} not found")
 
-        refs = plugin.get("refs", [{"name": DEFAULT_REF}])
     if ref is None:
-        refs = plugin.get("refs", [{"name": "main"}])
-        ref = refs[0]["name"]
+        refs = plugin.get("refs", None)
+        if refs:
+            ref = str(refs[0]["name"])
+        else:
+            ref = DEFAULT_REF
 
     # Fetch and validate manifest
     manifest = fetch_manifest(plugin["git_url"], ref)
