@@ -3,8 +3,9 @@
 Official registry and maintenance tools for MusicBrainz Picard plugins (v3).
 
 > **Plugin developers:** Want to submit your plugin? See the **[Plugin Submission Guide](PLUGIN_SUBMISSION.md)**.
->
-> **Note:** This registry is for Picard v3 plugins only. Legacy v2 plugins are managed through the [old plugin repository](https://github.com/metabrainz/picard-plugins).
+
+> [!NOTE]
+> This registry is for Picard v3 plugins only. Legacy v2 plugins are managed through the [old plugin repository](https://github.com/metabrainz/picard-plugins).
 
 ## Overview
 
