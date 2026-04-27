@@ -544,8 +544,32 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-05T20:01:04Z"
-updated_at = "2025-12-18T06:29:07Z"
+updated_at = "2026-04-27T18:01:18Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-xqaf"
+license = "GPL-3.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-3.0.html"
+long_description = """
+This plugin allows Picard to read and write XQAF and QOA audio file formats.
+
+XQAF files support full tagging. QOA files do not store tags, but can be
+loaded and renamed.
+
+For more details about both formats see
+[Introducing the Extended QOA Format for Audio](https://remilia.sdf.org/blog/2025-06-14-a.html)
+and [The Quite OK Audio Format](https://qoaformat.org/)."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [plugins.description_i18n]
 de = "Unterstützung für XQAF- und QOA-Audiodateien"
+
+[plugins.long_description_i18n]
+de = """
+Dieses Plugin ermöglicht es Picard, die Audio-Dateiformate XQAF und QOA zu lesen und zu schreiben.
+
+XQAF-Dateien unterstützen vollständiges Tagging. QOA-Dateien speichern keine Tags,
+können aber geladen und umbenannt werden.
+
+Weitere Details zu beiden Formaten finden sich unter
+[Introducing the Extended QOA Format for Audio](https://remilia.sdf.org/blog/2025-06-14-a.html)
+und [The Quite OK Audio Format](https://qoaformat.org/)."""
