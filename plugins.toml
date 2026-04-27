@@ -132,11 +132,19 @@ authors = [
   "Sambhav Kothari",
 ]
 added_at = "2025-12-16T15:21:14Z"
-updated_at = "2025-12-18T06:22:13Z"
+updated_at = "2026-04-27T18:04:54Z"
 versioning_scheme = "semver"
 maintainers = [
   "Philipp Wolfer",
 ]
+homepage = "https://git.sr.ht/~phw/picard-plugin-fanarttv"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Use cover art from fanart.tv.
+
+To use this plugin you have to register a personal API key on [fanart.tv](https://fanart.tv/get-an-api-key/)."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "format-performer-tags"
