@@ -414,7 +414,7 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2026-04-22T08:09:52Z"
-updated_at = "2026-04-22T08:09:52Z"
+updated_at = "2026-04-27T18:12:44Z"
 license = "MIT"
 license_url = "https://opensource.org/licenses/MIT"
 long_description = """
@@ -429,6 +429,8 @@ For scripting you can use the following tagger functions:
 - `$convert_to_simplified_chinese(text)`
 - `$convert_to_traditional_chinese(text)`"""
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-opencc"
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "performer-tag-replace"
