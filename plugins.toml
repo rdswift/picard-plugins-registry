@@ -104,8 +104,18 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-20T16:31:47Z"
-updated_at = "2025-12-20T16:31:47Z"
+updated_at = "2026-04-27T18:03:12Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-decade"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Add a $decade(date) scripting function to get the decade from a year.
+
+E.g. `$decade(1994-04-05)` will return \"90s\". By default decades between 1920 and 2000
+will be shortened to two digits. You can disable this with setting the second parameter
+to 0, e.g. `$decade(1994,0)` will return \"1990s\"."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "fanarttv"
@@ -122,11 +132,19 @@ authors = [
   "Sambhav Kothari",
 ]
 added_at = "2025-12-16T15:21:14Z"
-updated_at = "2025-12-18T06:22:13Z"
+updated_at = "2026-04-27T18:04:54Z"
 versioning_scheme = "semver"
 maintainers = [
   "Philipp Wolfer",
 ]
+homepage = "https://git.sr.ht/~phw/picard-plugin-fanarttv"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Use cover art from fanart.tv.
+
+To use this plugin you have to register a personal API key on [fanart.tv](https://fanart.tv/get-an-api-key/)."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "format-performer-tags"
@@ -180,8 +198,38 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2026-02-08T14:10:09Z"
-updated_at = "2026-02-08T14:10:09Z"
+updated_at = "2026-04-27T18:07:32Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-haikuattrs"
+license = "GPL-3.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-3.0.html"
+long_description = """
+This plugin enables Picard to both read and write tags as BFS file attributes on Haiku.
+
+_Note: This plugin is for the Haiku operating system only. It has no effect on any other
+operating system._
+
+When loading a file, the BFS file attributes are read and merged with the metadata read
+from the file tags. If the corresponding tag for a BFS file attribute already exists in
+the file tags the attribute value is ignored.
+
+When writing a file the metadata is written to BFS file attributes in addition to the
+file tags.
+
+The following BFS file attributes are supported:
+
+- `Audio:Artist`
+- `Audio:Album`
+- `Media:Title`
+- `Media:Year`
+- `Media:Comment`
+- `Audio:Track`
+- `Media:Genre`
+- `Audio:Composer`
+- `Media:Rating`
+- `Media:Length`
+- `Audio:Bitrate`"""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "keep-only-tags"
@@ -269,8 +317,21 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-18T16:56:18Z"
-updated_at = "2025-12-18T16:56:18Z"
+updated_at = "2026-04-27T18:09:00Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-loadasnat"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Allows loading selected tracks as standalone recordings.
+
+This is useful for tagging single tracks where you do not care about the album. To use
+it, select loaded tracks with attached files in the right pane, right click and select
+Plugins -> \"Load as standalone recording…\".
+
+The selected tracks will get loaded as a \"standalone recording\" with release specific
+tags being removed."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "losslessfuncs"
@@ -286,8 +347,28 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-20T14:24:01Z"
-updated_at = "2025-12-20T14:24:01Z"
+updated_at = "2026-04-27T18:10:17Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-losslessfuncs"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Tagger script functions to detect if a file is lossless or lossy.
+
+This plugin adds the functions `$is_lossless()` and `$is_lossy()`. They can
+be used in a file naming script to for example put lossy and lossless files
+into different directories, as in the example below.
+
+```
+$if($is_lossless(),lossless,lossy))/
+$if2(%albumartist%,%artist%)/
+$if(%albumartist%,%album%/,)
+$if($gt(%totaldiscs%,1),$if($gt(%totaldiscs%,9),$num(%discnumber%,2),%discnumber%)-,)$if($and(%albumartist%,%tracknumber%),$num(%tracknumber%,2) ,)$if(%_multiartist%,%artist% - ,)%title%
+```
+
+*Note: The lossless detection depends mainly on the file extension and does not look inside the
+file to detect the codec. For MP4 files it also checks the reported bitrate.*"""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "mod"
@@ -303,8 +384,20 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-17T18:42:57Z"
-updated_at = "2025-12-17T18:42:57Z"
+updated_at = "2026-04-27T18:10:56Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-mod"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Support for loading and renaming various tracker module formats with Picard. The plugin
+supports the formats .mod, .xm, .it, .mptm, .ahx, .mtm, .med, .s3m, .ult, .699 and .okt.
+
+There is limited support for writing the title tag as track name for some formats
+(.mod, .xm, .it, .mptm, .ahx, .mtm, .s3m, .ult, .669). The title is often limited
+to a certain character length (e.g. 20 for .mod and .xm files). Titles will be
+truncated to fit this limit."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "opencc"
@@ -321,7 +414,7 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2026-04-22T08:09:52Z"
-updated_at = "2026-04-22T08:09:52Z"
+updated_at = "2026-04-27T18:12:44Z"
 license = "MIT"
 license_url = "https://opensource.org/licenses/MIT"
 long_description = """
@@ -336,6 +429,8 @@ For scripting you can use the following tagger functions:
 - `$convert_to_simplified_chinese(text)`
 - `$convert_to_traditional_chinese(text)`"""
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-opencc"
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "performer-tag-replace"
@@ -472,8 +567,21 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-21T00:06:02Z"
-updated_at = "2025-12-21T00:06:02Z"
+updated_at = "2026-04-27T18:13:55Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-theaudiodb"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+This plugin adds a cover art provider for [TheAudioDB](https://www.theaudiodb.com/).
+
+The cover art provider can fetch the front cover and optionally also CD artwork,
+if available.
+
+TheAudioDB is a community Database of audio artwork and data. Their content is only
+possible thanks to the hard work of volunteer editors. If you like this plugin, please
+consider [registering](https://www.theaudiodb.com/user_register2.php) as an editor."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "view-script-variables"
@@ -521,14 +629,44 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-17T16:26:15Z"
-updated_at = "2025-12-17T16:26:15Z"
+updated_at = "2026-04-27T18:15:16Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-workandmovement"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+This plugin attempts to set the `movement` and `movementnumber` tags, but only
+if the work linked to the recording is part of a larger work. The `work` tag
+then gets set to the work of which the movement is a part of.
+
+If the recording is only linked to a simple work without separate parts then it
+is not considered a proper work and the work and movement related tags will be
+cleared.
+
+The plugin will always set the original values, as loaded from MusicBrainz, of
+the `work` and `musicbrainz_workid` tags into the variables `%_recording_work%`
+and `%_recording_workid%` to be used in scripting."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [plugins.name_i18n]
 de = "Werk & Satz"
 
 [plugins.description_i18n]
 de = "Werk und Satz anhand von Werkbeziehungen setzen."
+
+[plugins.long_description_i18n]
+de = """
+Dieses Plugin versucht, die Tags `movement` und `movementnumber` zu setzen – allerdings
+nur dann, wenn das mit der Aufnahme verknüpfte Werk Teil eines übergeordneten Werks ist.
+In diesem Fall wird das Tag work auf das Werk gesetzt, zu dem der Satz gehört.
+
+Ist die Aufnahme lediglich mit einem einfachen Werk ohne separate Teile verknüpft, wird
+dies nicht als eigenständiges Werk betrachtet, und die werk- und satzbezogenen Tags
+werden gelöscht.
+
+Das Plugin setzt außerdem immer die ursprünglichen, aus MusicBrainz geladenen Werte der
+Tags `work` und `musicbrainz_workid` in die Variablen `%_recording_work%` und
+`%_recording_workid%`, damit diese in Skripten verwendet werden können."""
 
 [[plugins]]
 id = "xqaf"
@@ -544,8 +682,32 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-05T20:01:04Z"
-updated_at = "2025-12-18T06:29:07Z"
+updated_at = "2026-04-27T18:01:18Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-xqaf"
+license = "GPL-3.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-3.0.html"
+long_description = """
+This plugin allows Picard to read and write XQAF and QOA audio file formats.
+
+XQAF files support full tagging. QOA files do not store tags, but can be
+loaded and renamed.
+
+For more details about both formats see
+[Introducing the Extended QOA Format for Audio](https://remilia.sdf.org/blog/2025-06-14-a.html)
+and [The Quite OK Audio Format](https://qoaformat.org/)."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [plugins.description_i18n]
 de = "Unterstützung für XQAF- und QOA-Audiodateien"
+
+[plugins.long_description_i18n]
+de = """
+Dieses Plugin ermöglicht es Picard, die Audio-Dateiformate XQAF und QOA zu lesen und zu schreiben.
+
+XQAF-Dateien unterstützen vollständiges Tagging. QOA-Dateien speichern keine Tags,
+können aber geladen und umbenannt werden.
+
+Weitere Details zu beiden Formaten finden sich unter
+[Introducing the Extended QOA Format for Audio](https://remilia.sdf.org/blog/2025-06-14-a.html)
+und [The Quite OK Audio Format](https://qoaformat.org/)."""
