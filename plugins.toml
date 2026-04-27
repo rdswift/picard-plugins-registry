@@ -198,8 +198,38 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2026-02-08T14:10:09Z"
-updated_at = "2026-02-08T14:10:09Z"
+updated_at = "2026-04-27T18:07:32Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-haikuattrs"
+license = "GPL-3.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-3.0.html"
+long_description = """
+This plugin enables Picard to both read and write tags as BFS file attributes on Haiku.
+
+_Note: This plugin is for the Haiku operating system only. It has no effect on any other
+operating system._
+
+When loading a file, the BFS file attributes are read and merged with the metadata read
+from the file tags. If the corresponding tag for a BFS file attribute already exists in
+the file tags the attribute value is ignored.
+
+When writing a file the metadata is written to BFS file attributes in addition to the
+file tags.
+
+The following BFS file attributes are supported:
+
+- `Audio:Artist`
+- `Audio:Album`
+- `Media:Title`
+- `Media:Year`
+- `Media:Comment`
+- `Audio:Track`
+- `Media:Genre`
+- `Audio:Composer`
+- `Media:Rating`
+- `Media:Length`
+- `Audio:Bitrate`"""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "keep-only-tags"
