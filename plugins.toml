@@ -629,14 +629,44 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-17T16:26:15Z"
-updated_at = "2025-12-17T16:26:15Z"
+updated_at = "2026-04-27T18:15:16Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-workandmovement"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+This plugin attempts to set the `movement` and `movementnumber` tags, but only
+if the work linked to the recording is part of a larger work. The `work` tag
+then gets set to the work of which the movement is a part of.
+
+If the recording is only linked to a simple work without separate parts then it
+is not considered a proper work and the work and movement related tags will be
+cleared.
+
+The plugin will always set the original values, as loaded from MusicBrainz, of
+the `work` and `musicbrainz_workid` tags into the variables `%_recording_work%`
+and `%_recording_workid%` to be used in scripting."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [plugins.name_i18n]
 de = "Werk & Satz"
 
 [plugins.description_i18n]
 de = "Werk und Satz anhand von Werkbeziehungen setzen."
+
+[plugins.long_description_i18n]
+de = """
+Dieses Plugin versucht, die Tags `movement` und `movementnumber` zu setzen – allerdings
+nur dann, wenn das mit der Aufnahme verknüpfte Werk Teil eines übergeordneten Werks ist.
+In diesem Fall wird das Tag work auf das Werk gesetzt, zu dem der Satz gehört.
+
+Ist die Aufnahme lediglich mit einem einfachen Werk ohne separate Teile verknüpft, wird
+dies nicht als eigenständiges Werk betrachtet, und die werk- und satzbezogenen Tags
+werden gelöscht.
+
+Das Plugin setzt außerdem immer die ursprünglichen, aus MusicBrainz geladenen Werte der
+Tags `work` und `musicbrainz_workid` in die Variablen `%_recording_work%` und
+`%_recording_workid%`, damit diese in Skripten verwendet werden können."""
 
 [[plugins]]
 id = "xqaf"
