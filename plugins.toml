@@ -384,8 +384,20 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-17T18:42:57Z"
-updated_at = "2025-12-17T18:42:57Z"
+updated_at = "2026-04-27T18:10:56Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-mod"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Support for loading and renaming various tracker module formats with Picard. The plugin
+supports the formats .mod, .xm, .it, .mptm, .ahx, .mtm, .med, .s3m, .ult, .699 and .okt.
+
+There is limited support for writing the title tag as track name for some formats
+(.mod, .xm, .it, .mptm, .ahx, .mtm, .s3m, .ult, .669). The title is often limited
+to a certain character length (e.g. 20 for .mod and .xm files). Titles will be
+truncated to fit this limit."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "opencc"
