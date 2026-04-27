@@ -347,8 +347,28 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-20T14:24:01Z"
-updated_at = "2025-12-20T14:24:01Z"
+updated_at = "2026-04-27T18:10:17Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-losslessfuncs"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Tagger script functions to detect if a file is lossless or lossy.
+
+This plugin adds the functions `$is_lossless()` and `$is_lossy()`. They can
+be used in a file naming script to for example put lossy and lossless files
+into different directories, as in the example below.
+
+```
+$if($is_lossless(),lossless,lossy))/
+$if2(%albumartist%,%artist%)/
+$if(%albumartist%,%album%/,)
+$if($gt(%totaldiscs%,1),$if($gt(%totaldiscs%,9),$num(%discnumber%,2),%discnumber%)-,)$if($and(%albumartist%,%tracknumber%),$num(%tracknumber%,2) ,)$if(%_multiartist%,%artist% - ,)%title%
+```
+
+*Note: The lossless detection depends mainly on the file extension and does not look inside the
+file to detect the codec. For MP4 files it also checks the reported bitrate.*"""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "mod"
