@@ -567,8 +567,21 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-21T00:06:02Z"
-updated_at = "2025-12-21T00:06:02Z"
+updated_at = "2026-04-27T18:13:55Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-theaudiodb"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+This plugin adds a cover art provider for [TheAudioDB](https://www.theaudiodb.com/).
+
+The cover art provider can fetch the front cover and optionally also CD artwork,
+if available.
+
+TheAudioDB is a community Database of audio artwork and data. Their content is only
+possible thanks to the hard work of volunteer editors. If you like this plugin, please
+consider [registering](https://www.theaudiodb.com/user_register2.php) as an editor."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "view-script-variables"
