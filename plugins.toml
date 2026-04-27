@@ -317,8 +317,21 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-18T16:56:18Z"
-updated_at = "2025-12-18T16:56:18Z"
+updated_at = "2026-04-27T18:09:00Z"
 versioning_scheme = "semver"
+homepage = "https://git.sr.ht/~phw/picard-plugin-loadasnat"
+license = "GPL-2.0-or-later"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Allows loading selected tracks as standalone recordings.
+
+This is useful for tagging single tracks where you do not care about the album. To use
+it, select loaded tracks with attached files in the right pane, right click and select
+Plugins -> \"Load as standalone recording…\".
+
+The selected tracks will get loaded as a \"standalone recording\" with release specific
+tags being removed."""
+report_bugs_to = "https://todo.sr.ht/~phw/picard-plugins"
 
 [[plugins]]
 id = "losslessfuncs"
