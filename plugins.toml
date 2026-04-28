@@ -494,11 +494,43 @@ authors = [
   "Philipp Wolfer",
 ]
 added_at = "2025-12-20T15:25:15Z"
-updated_at = "2025-12-20T15:25:15Z"
+updated_at = "2026-04-28T00:19:53Z"
 maintainers = [
   "MusicBrainz Picard Team",
 ]
 versioning_scheme = "semver"
+homepage = "https://github.com/metabrainz/picard-plugin-replaygain2"
+license = "GPL-2.0"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Calculates ReplayGain information for tracks and albums according to the
+[ReplayGain 2.0 specification](https://wiki.hydrogenaud.io/index.php?title=ReplayGain_2.0_specification).
+This plugin depends on the ReplayGain utility [rsgain](https://github.com/complexlogic/rsgain). Users
+are required to install rsgain and set its path in the plugin settings before use.
+
+#### Usage
+Select one or more tracks, albums, or clusters then right click and select Plugin->Calculate ReplayGain.
+The plugin will calculate ReplayGain information for the selected items and display the results in the
+metadata window. Click the save button to write the tags to file.
+
+The following file formats are supported:
+
+- MP3 (.mp3)
+- FLAC (.flac)
+- Ogg (.ogg, .oga, spx)
+- Opus (.opus)
+- MPEG-4 Audio (.m4a, .mp4)
+- Wavpack (.wv)
+- Monkey's Audio (.ape)
+- WMA (.wma)
+- MP2 (.mp2)
+- WAV (.wav)
+- AIFF (.aiff)
+- TAK (.tak)
+- MusePack *(Stream Version 8 only)* (.mpc)
+
+This plugin is based on the original ReplayGain plugin by Philipp Wolfer and Sophist."""
+report_bugs_to = "https://tickets.metabrainz.org/issues/?filter=13410"
 
 [[plugins]]
 id = "script-logger"
@@ -598,7 +630,7 @@ authors = [
   "Sophist",
 ]
 added_at = "2025-12-03T23:44:25Z"
-updated_at = "2025-12-22T18:12:02Z"
+updated_at = "2026-04-28T00:19:39Z"
 maintainers = [
   "MusicBrainz Picard Team",
 ]
@@ -606,6 +638,15 @@ versioning_scheme = "semver"
 redirect_from = [
   "https://github.com/rdswift/picard-plugin-view-script-variables",
 ]
+homepage = "https://github.com/metabrainz/picard-plugin-view-script-variables"
+license = "GPL-2.0"
+license_url = "https://www.gnu.org/licenses/gpl-2.0.html"
+long_description = """
+Display a dialog box listing the metadata tags and variables for the track / file.
+
+This allows you to see metadata variables beginning with \"~\" which are not normally visible in the metadata
+pane of the main Picard window, which can be useful when you are writing tagging or file naming scripts."""
+report_bugs_to = "https://tickets.metabrainz.org/issues/?filter=13410"
 
 [plugins.name_i18n]
 de = "Script-Variablen anzeigen"
@@ -614,6 +655,21 @@ fr = "Afficher les variables du script"
 [plugins.description_i18n]
 de = "Zeigen Sie ein Dialogfeld an, in dem die Metadaten-Tags und Variablen für den Titel/die Datei aufgelistet sind."
 fr = "Affichez une boîte de dialogue répertoriant les balises de métadonnées et les variables pour la piste/le fichier."
+
+[plugins.long_description_i18n]
+de = """
+Zeigt ein Dialogfeld mit den Metadaten-Tags und Variablen für den Titel/die Datei an.
+
+Dadurch können Sie Metadatenvariablen sehen, die mit „~“ beginnen und normalerweise im Metadatenbereich des
+Picard-Hauptfensters nicht sichtbar sind. Dies kann beim Schreiben von Skripten zum Taggen oder Benennen von Dateien nützlich sein.
+"""
+fr = """
+Affichez une boîte de dialogue répertoriant les balises et variables de métadonnées pour la piste/le fichier.
+
+Cela vous permet de voir les variables de métadonnées commençant par « ~ » qui ne sont normalement pas visibles dans le volet
+des métadonnées de la fenêtre principale de Picard, ce qui peut être utile lorsque vous écrivez des scripts de balisage ou de
+nommage de fichiers.
+"""
 
 [[plugins]]
 id = "workandmovement"
