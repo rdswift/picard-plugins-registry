@@ -1,5 +1,6 @@
 """Plugin operations."""
 
+import re
 from typing import Any
 import warnings
 
@@ -29,17 +30,19 @@ _OPTIONAL_MANIFEST_FIELDS = (
     "report_bugs_to",
 )
 
+WHITESPACE_WARNING_RE = re.compile(r'^\n?(\S.*\S)*\S?\n?$', re.DOTALL)
+
 
 def _strip_field(value: Any, field_name: str, plugin_id: str) -> Any:
     """Strip whitespace from a string value, warning if it differs."""
     if isinstance(value, str):
-        stripped = value.strip()
-        if stripped != value:
+        # Allow single leading/trailing newline to accommodate docstring type entries
+        if not WHITESPACE_WARNING_RE.fullmatch(value):
             warnings.warn(
                 f"Plugin '{plugin_id}': field '{field_name}' has leading/trailing whitespace",
                 stacklevel=2,
             )
-        return stripped
+        return value.strip()
     return value
 
 
