@@ -30,7 +30,7 @@ _OPTIONAL_MANIFEST_FIELDS = (
     "report_bugs_to",
 )
 
-WHITESPACE_WARNING_RE = re.compile(r'^\n?\S.*\S\n?$', re.DOTALL)
+WHITESPACE_WARNING_RE = re.compile(r'^\n?(\S.*\S)*\S?\n?$', re.DOTALL)
 
 
 def _strip_field(value: Any, field_name: str, plugin_id: str) -> Any:
