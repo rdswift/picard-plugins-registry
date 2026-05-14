@@ -18,6 +18,34 @@ Your plugin must:
 
 ---
 
+## Considerations
+
+The plugin registry provides a list of approved plugins available to **all** Picard users through the plugin manager. The following should be considered prior to submitting a plugin for inclusion in the registry:
+
+- Plugin applicability:
+   - Is this something that others would use, or is it something specific to your workflow?
+   - Has it been requested or discussed in the Community Forums?
+   - Can the functionality be acomplished through existing methods, such as tagger scripts or other plugins?
+   - Does it provide new functionally significantly different from existing plugins? If it only provides incremental changes, it might be more appropriate to submit a patch to update the existing plugin.
+
+- Plugin code quality:
+   - How much of the code has been provided by an AI agent? Has **all** AI contribution been reviewed thoroughly?
+   - Are any new user settings stored as plugin-specific settings?
+   - Are all code paths secured such that they don't result in any unhandled exceptions?
+   - Has the plugin been tested thoroughly to ensure that it doesn't result in any unintended results? This should also include testing edge cases.
+
+- Plugin general quality:
+   - Does the plugin description (and long description) provide enough information to allow the user to understand what it does?
+   - Does it provide a home page with addition usage instructions, if appropriate?
+   - Does it provide a link to use for reporting bugs or requesting changes?
+   - If there is a user interface for displaying outputs, accepting inputs or managing user settings, is there provision for translation into other locales?
+
+- Plugin author credentials:
+   - Have you contributed plugins or Picard code previously? If not, the approvers may perform a more thorough review of the submitted plugin code quality.
+   - Do you have a reputation with respect to prior contributions?
+
+---
+
 ## Setting Up
 
 1. **Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if you don't have it:**
